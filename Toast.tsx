@@ -1,0 +1,172 @@
+"use client";
+
+import { useState } from "react";
+import { X, Download } from "lucide-react";
+import { downloadApplicationFile, updateApplicationStatus } from "@/lib/adminApi";
+import { useToast } from "@/components/Toast";
+
+type Application = {
+  _id: string;
+  track: string;
+  group: string;
+  groupLabel: string;
+  name: string;
+  email: string;
+  phone: string;
+  studentId?: string;
+  status: "대기" | "합격" | "불합격";
+  answers: { question: string; answer: string }[];
+  file?: { originalName?: string; storedName?: string; gridfsId?: string };
+  createdAt: string;
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  대기: "var(--color-sub)",
+  합격: "var(--color-success, #1fa565)",
+  불합격: "var(--color-danger)",
+};
+
+export default function ApplicantDetailModal({
+  application,
+  onClose,
+  onStatusChanged,
+}: {
+  application: Application;
+  onClose: () => void;
+  onStatusChanged: (id: string, status: "대기" | "합격" | "불합격") => void;
+}) {
+  const { showToast } = useToast();
+  const [status, setStatus] = useState(application.status);
+  const [saving, setSaving] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  const changeStatus = async (next: "대기" | "합격" | "불합격") => {
+    setSaving(true);
+    try {
+      await updateApplicationStatus(application._id, next);
+      setStatus(next);
+      onStatusChanged(application._id, next);
+      showToast(`상태가 '${next}'(으)로 변경되었습니다.`, "success");
+    } catch (e: any) {
+      showToast(e.message || "상태 변경에 실패했습니다.", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadApplicationFile(
+        application._id,
+        application.file?.storedName || application.file?.originalName || "attachment"
+      );
+    } catch (e: any) {
+      showToast(e.message || "파일 다운로드에 실패했습니다.", "error");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(20,22,26,0.5)",
+        zIndex: 60,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#fff",
+          borderRadius: "20px 20px 0 0",
+          width: "100%",
+          maxWidth: 640,
+          maxHeight: "88vh",
+          overflowY: "auto",
+          padding: "22px 22px 34px",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <div style={{ fontSize: 12, color: "var(--color-sub)", fontWeight: 700 }}>
+              {application.track === "editor" ? "EDITOR" : "DESIGNER"} · {application.groupLabel}
+            </div>
+            <h2 style={{ fontSize: 20, fontWeight: 800, margin: "2px 0 0" }}>{application.name}</h2>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none" }}>
+            <X size={22} />
+          </button>
+        </div>
+
+        <div style={{ fontSize: 13, color: "var(--color-sub)", marginTop: 10, lineHeight: 1.8 }}>
+          이메일: {application.email} · 연락처: {application.phone} · 학번:{" "}
+          {application.studentId || "미입력"}
+          <br />
+          접수: {new Date(application.createdAt).toLocaleString("ko-KR")}
+        </div>
+
+        <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+          {(["대기", "합격", "불합격"] as const).map((s) => (
+            <button
+              key={s}
+              disabled={saving}
+              onClick={() => changeStatus(s)}
+              style={{
+                padding: "8px 16px",
+                borderRadius: 999,
+                border: `1.5px solid ${STATUS_COLORS[s]}`,
+                background: status === s ? STATUS_COLORS[s] : "transparent",
+                color: status === s ? "#fff" : STATUS_COLORS[s],
+                fontWeight: 700,
+                fontSize: 13,
+              }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
+        {application.file?.storedName && (
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            style={{
+              marginTop: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "9px 14px",
+              borderRadius: 10,
+              border: "1.5px solid var(--color-line)",
+              background: "#fff",
+              fontSize: 13,
+            }}
+          >
+            <Download size={16} />
+            {downloading ? "다운로드 중..." : `첨부파일 다운로드 (${application.file.storedName})`}
+          </button>
+        )}
+
+        <div style={{ marginTop: 22 }}>
+          {application.answers.map((qa, i) => (
+            <div key={i} style={{ marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: 13.5, marginBottom: 4 }}>
+                Q{i + 1}. {qa.question}
+              </div>
+              <div style={{ fontSize: 13.5, color: "#333", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                {qa.answer}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
