@@ -99,8 +99,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       });
       clearDraft(track, group);
       setShowSuccess(true);
-    } catch (e) {
-      showToast(
+    } catch (e: any) {
       showToast(e?.message || "제출 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "error");
       setSubmitting(false); // 실패 시에는 재시도할 수 있도록 다시 활성화
     }
