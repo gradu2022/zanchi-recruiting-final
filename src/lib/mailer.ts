@@ -32,7 +32,7 @@ function buildAnswersTableHtml(answers: { question: string; answer: string }[]) 
   return `<table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:14px;"><tbody>${rows}</tbody></table>`;
 }
 
-function buildAdminHtml(app: any) {
+function buildAdminHtml(app: any, hasFile: boolean) {
   return `
     <div style="font-family:sans-serif;">
       <h2 style="color:#F2622E;">새 지원서가 접수되었습니다 — ${escapeHtml(app.groupLabel)}</h2>
@@ -43,7 +43,11 @@ function buildAdminHtml(app: any) {
         <tr><td style="padding:4px 10px;color:#666;">학번</td><td style="padding:4px 10px;">${escapeHtml(app.studentId || "미입력")}</td></tr>
       </table>
       ${buildAnswersTableHtml(app.answers)}
-      <p style="margin-top:16px;color:#666;font-size:13px;">첨부파일이 있다면 이 메일에 동봉되어 있습니다.</p>
+      ${
+        hasFile
+          ? '<p style="margin-top:16px;color:#666;font-size:13px;">첨부파일은 이메일에 동봉되지 않았습니다 — 관리자 대시보드(/admin/dashboard)에서 다운로드해주세요.</p>'
+          : ""
+      }
     </div>`;
 }
 
@@ -63,12 +67,13 @@ type SendArgs = {
   thankYouMessage?: string;
   attachmentBuffer: Buffer | null;
   attachmentName: string | null;
+  hasFile?: boolean;
 };
 
 /**
- * 관리자(최대 4명, 한 통) + 지원자 확인 메일을 순서대로 "await로 기다리며" 보냅니다.
- * (Vercel 서버리스에서는 응답 이후 실행이 보장되지 않기 때문에, 이 함수가
- *  완전히 끝난 뒤에야 API 라우트가 응답을 반환합니다 — 속도보다 발송 신뢰성 우선.)
+ * 관리자(최대 4명, 한 통) + 지원자 확인 메일을 await로 기다리며 보냅니다.
+ * 파일은 더 이상 메일에 직접 동봉하지 않습니다(GridFS에만 저장) — 첨부파일 인코딩·전송
+ * 시간이 Vercel 함수 실행 시간 제한을 넘겨 "Failed to fetch"를 유발했기 때문입니다.
  */
 export async function sendApplicationEmails({
   app,
@@ -76,6 +81,7 @@ export async function sendApplicationEmails({
   thankYouMessage,
   attachmentBuffer,
   attachmentName,
+  hasFile,
 }: SendArgs) {
   const transporter = getTransporter();
   const attachments =
@@ -89,7 +95,7 @@ export async function sendApplicationEmails({
         from: process.env.MAIL_FROM,
         to: adminEmails.join(","),
         subject: `[잔치 지원서] ${app.groupLabel} - ${app.name}`,
-        html: buildAdminHtml(app),
+        html: buildAdminHtml(app, Boolean(hasFile)),
         attachments,
       });
       result.adminMailSent = true;

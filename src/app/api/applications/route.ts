@@ -7,11 +7,6 @@ import { buildAttachmentFilename, resolveGroupLabel } from "@/lib/filename";
 import { sendApplicationEmails } from "@/lib/mailer";
 
 export const runtime = "nodejs";
-// 메일 발송까지 끝난 뒤 응답하는 동기 구조라 넉넉히 잡아둡니다.
-// 주의: Vercel Hobby 플랜은 함수 실행 시간에 상한이 있습니다(무료 요금제 기준 기본 10초,
-// 유료 플랜/Fluid Compute 설정에 따라 더 길게 늘릴 수 있어요 - 정확한 상한은 사용 중인
-// Vercel 플랜의 대시보드에서 확인해주세요. 큰 첨부파일 + 느린 SMTP가 겹치면
-// 타임아웃(504)이 날 수 있다는 점을 감안해주세요).
 export const maxDuration = 60;
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
@@ -104,31 +99,40 @@ export async function POST(req: Request) {
         : undefined,
     });
 
-    // ── 동기 구조: 파일 저장(GridFS) + 메일 발송을 모두 끝낸 뒤에만 응답합니다.
     let attachmentBuffer: Buffer | null = null;
     let attachmentName: string | null = null;
 
     if (file) {
       attachmentBuffer = Buffer.from(await file.arrayBuffer());
       attachmentName = buildAttachmentFilename({ track, group, name, phone, originalName: file.name });
-
-      try {
-        const gridfsId = await saveBufferToGridFS(attachmentBuffer, attachmentName, file.type);
-        application.file.storedName = attachmentName;
-        application.file.gridfsId = gridfsId;
-      } catch (err: any) {
-        console.error("[GRIDFS] 파일 저장 실패:", err.message);
-        application.mailStatus.lastError = `GridFS 저장 실패: ${err.message}`;
-      }
     }
 
-    const mailResult = await sendApplicationEmails({
+    // ── GridFS 저장과 메일 발송은 서로 의존하지 않으므로 동시에(병렬로) 처리해서
+    //    전체 대기 시간을 줄입니다. (이메일에는 더 이상 파일을 직접 동봉하지 않고,
+    //    관리자 대시보드에서 다운로드하도록 안내만 합니다 — 그래서 메일 발송이
+    //    훨씬 가벼워지고 빨라집니다.)
+    const gridfsPromise = attachmentBuffer
+      ? saveBufferToGridFS(attachmentBuffer, attachmentName as string, file!.type)
+          .then((gridfsId) => {
+            application.file.storedName = attachmentName;
+            application.file.gridfsId = gridfsId;
+          })
+          .catch((err: any) => {
+            console.error("[GRIDFS] 파일 저장 실패:", err.message);
+            application.mailStatus.lastError = `GridFS 저장 실패: ${err.message}`;
+          })
+      : Promise.resolve();
+
+    const mailPromise = sendApplicationEmails({
       app: application,
       adminEmails: (settings.adminEmails || []).slice(0, 4),
       thankYouMessage: settings.content.thankYouMessage,
-      attachmentBuffer,
+      attachmentBuffer: null,
       attachmentName,
+      hasFile: Boolean(file),
     });
+
+    const [, mailResult] = await Promise.all([gridfsPromise, mailPromise]);
 
     application.mailStatus.adminMailSent = mailResult.adminMailSent;
     application.mailStatus.applicantMailSent = mailResult.applicantMailSent;
@@ -144,7 +148,7 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error("[SUBMIT] 지원서 저장 실패:", err);
     return NextResponse.json(
-      { ok: false, message: "서버 오류로 지원서를 저장하지 못했습니다." },
+      { ok: false, message: err?.message || "서버 오류로 지원서를 저장하지 못했습니다." },
       { status: 500 }
     );
   }
