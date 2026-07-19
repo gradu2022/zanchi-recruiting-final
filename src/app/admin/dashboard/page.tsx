@@ -202,6 +202,10 @@ export default function AdminDashboardPage() {
             setDetailCache((prev) => ({ ...prev, [id]: { ...prev[id], status } }));
             setApplications((prev) => prev.map((a) => (a._id === id ? { ...a, status } : a)));
           }}
+onDeleted={(id) => {
+            setApplications((prev) => prev.filter((a) => a._id !== id));
+            setSelectedId(null);
+          }}
         />
       )}
     </div>

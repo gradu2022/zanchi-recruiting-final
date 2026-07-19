@@ -1,7 +1,5 @@
 import { getAdminToken } from "./adminAuth";
 
-
-
 export class AdminApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -75,6 +73,11 @@ export async function updateApplicationStatus(id: string, status: "대기" | "�
   return res.json();
 }
 
+export async function deleteApplication(id: string) {
+  const res = await request(`/api/admin/applications/${id}/delete`, { method: "DELETE" });
+  return res.json();
+}
+
 export async function downloadApplicationFile(id: string, fallbackName: string) {
   const res = await request(`/api/admin/applications/${id}/file`);
   const blob = await res.blob();
@@ -89,8 +92,6 @@ export async function downloadApplicationFile(id: string, fallbackName: string) 
 }
 
 export function exportCsvUrlWithToken() {
-  // CSV는 브라우저 다운로드 링크가 아니라 fetch 후 blob으로 내려받아야
-  // Authorization 헤더(JWT)를 포함시킬 수 있습니다.
   return async () => {
     const res = await request("/api/admin/applications/export.csv");
     const blob = await res.blob();
@@ -115,5 +116,10 @@ export async function saveAdminSettings(payload: Record<string, unknown>) {
     method: "PUT",
     body: JSON.stringify(payload),
   });
+  return res.json();
+}
+
+export async function deleteApplication(id: string) {
+  const res = await request(`/api/admin/applications/${id}/delete`, { method: "DELETE" });
   return res.json();
 }

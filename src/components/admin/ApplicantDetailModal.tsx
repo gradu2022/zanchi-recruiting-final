@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, Download } from "lucide-react";
-import { downloadApplicationFile, updateApplicationStatus } from "@/lib/adminApi";
+import { downloadApplicationFile, updateApplicationStatus, deleteApplication } from "@/lib/adminApi";
 import { useToast } from "@/components/Toast";
 
 type Application = {
@@ -30,13 +30,16 @@ export default function ApplicantDetailModal({
   application,
   onClose,
   onStatusChanged,
+  onDeleted,
 }: {
   application: Application;
   onClose: () => void;
   onStatusChanged: (id: string, status: "대기" | "합격" | "불합격") => void;
+onDeleted: (id: string) => void;
 }) {
   const { showToast } = useToast();
   const [status, setStatus] = useState(application.status);
+const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
@@ -154,6 +157,35 @@ export default function ApplicantDetailModal({
           </button>
         )}
 
+<button
+          onClick={async () => {
+            if (!confirm(`${application.name}님의 지원서를 정말 삭제할까요? 되돌릴 수 없습니다.`)) return;
+            setDeleting(true);
+            try {
+              await deleteApplication(application._id);
+              showToast("지원서가 삭제되었습니다.", "success");
+              onDeleted(application._id);
+              onClose();
+            } catch (e: any) {
+              showToast(e.message || "삭제에 실패했습니다.", "error");
+            } finally {
+              setDeleting(false);
+            }
+          }}
+          disabled={deleting}
+          style={{
+            marginTop: 10,
+            display: "block",
+            fontSize: 12.5,
+            color: "var(--color-danger)",
+            background: "none",
+            border: "1px solid var(--color-danger)",
+            borderRadius: 8,
+            padding: "8px 14px",
+          }}
+        >
+          {deleting ? "삭제 중..." : "🗑 이 지원서 삭제하기"}
+        </button>
         <div style={{ marginTop: 22 }}>
           {application.answers.map((qa, i) => (
             <div key={i} style={{ marginBottom: 16 }}>

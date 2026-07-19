@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "./Header";
 import CharCounterTextarea from "./CharCounterTextarea";
 import FileUploadBox from "./FileUploadBox";
@@ -21,6 +22,7 @@ type Props = {
 
 export default function ApplicationForm({ track, group, groupConfig, content }: Props) {
   const { showToast } = useToast();
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,7 +36,6 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
 
   const hasHydrated = useRef(false);
 
-  // 최초 진입 시 임시저장된 초안 복원
   useEffect(() => {
     const draft = loadDraft(track, group);
     if (draft) {
@@ -51,7 +52,6 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 변경될 때마다 자동 임시저장 (디바운스)
   useEffect(() => {
     if (!hasHydrated.current) return;
     const t = setTimeout(() => {
@@ -81,11 +81,11 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   };
 
   const handleSubmit = async () => {
-    if (submitting) return; // 연타 방어(추가 안전장치)
+    if (submitting) return;
     if (!allConsented) return;
     if (!validate()) return;
 
-    setSubmitting(true); // 클릭 즉시 비활성화하여 중복 접수 방지
+    setSubmitting(true);
     try {
       await submitApplication({
         track,
@@ -101,7 +101,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       setShowSuccess(true);
     } catch (e: any) {
       showToast(e?.message || "제출 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "error");
-      setSubmitting(false); // 실패 시에는 재시도할 수 있도록 다시 활성화
+      setSubmitting(false);
     }
   };
 
@@ -195,7 +195,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       <SuccessModal
         open={showSuccess}
         message={content.thankYouMessage}
-        onClose={() => setShowSuccess(false)}
+        onClose={() => router.push("/")}
       />
     </div>
   );
