@@ -93,6 +93,7 @@ const [deleting, setDeleting] = useState(false);
           maxWidth: 640,
           maxHeight: "88vh",
           overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
           padding: "22px 22px 34px",
         }}
       >

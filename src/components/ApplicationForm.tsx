@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Mail } from "lucide-react";
 import Header from "./Header";
 import CharCounterTextarea from "./CharCounterTextarea";
 import FileUploadBox from "./FileUploadBox";
@@ -170,6 +171,27 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
         </section>
 
         <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
+
+        {content.fileEmailNoticeMessage && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 8,
+              marginTop: -10,
+              marginBottom: 22,
+              padding: "12px 14px",
+              borderRadius: 10,
+              background: "#FFF6F1",
+              color: "var(--color-orange-dark)",
+              fontSize: 12.5,
+              lineHeight: 1.6,
+            }}
+          >
+            <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span>{content.fileEmailNoticeMessage}</span>
+          </div>
+        )}
 
         <ConsentCheckboxes checked={consent} onChange={setConsent} />
 

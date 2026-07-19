@@ -34,6 +34,11 @@ const SettingsSchema = new Schema(
         type: String,
         default: "현재는 모집 기간이 아닙니다. 다음 모집을 기다려주세요.",
       },
+      fileEmailNoticeMessage: {
+        type: String,
+        default:
+          "첨부파일은 업로드 후 welcometozanchi@gmail.com으로도 함께 보내주세요. (파일명 예시: OO팀_홍길동)",
+      },
     },
 
     // track -> group -> { label, questions: string[] }

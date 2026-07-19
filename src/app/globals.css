@@ -29,7 +29,7 @@ body {
   color: var(--color-black);
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-shell {

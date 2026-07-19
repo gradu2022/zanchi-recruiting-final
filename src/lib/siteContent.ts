@@ -14,6 +14,7 @@ export type SiteContent = {
   fileTooLargeMessage: string;
   missingRequiredMessage: string;
   recruitmentClosedMessage: string;
+  fileEmailNoticeMessage: string;
 };
 
 export type SiteContentResponse = {
