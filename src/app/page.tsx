@@ -39,18 +39,16 @@ export default function HomePage() {
     <div>
       <Header />
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "72px 24px 60px", textAlign: "center" }}>
-        <h1
+        <img
+          src="/logo.png"
+          alt={content.heroTitle}
           style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 900,
-            fontSize: "clamp(40px, 13vw, 64px)",
-            letterSpacing: "-0.03em",
-            color: "var(--color-black)",
-            margin: 0,
+            width: "clamp(220px, 60vw, 340px)",
+            height: "auto",
+            margin: "0 auto",
+            display: "block",
           }}
-        >
-          {content.heroTitle}
-        </h1>
+        />
         <p style={{ color: "var(--color-sub)", marginTop: 14, fontSize: 14.5, lineHeight: 1.6 }}>
           {content.heroTagline}
         </p>
