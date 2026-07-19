@@ -35,7 +35,7 @@ const DEFAULT_QUESTION_GROUPS = {
   },
   designer: {
     design: {
-      label: "Designer",
+      label: "디자이너",
       questions: [
         "잔치 디자이너에 지원한 동기를 자유롭게 작성해주세요.",
         "본인의 디자인 툴 활용 능력과 경험을 알려주세요.",
@@ -45,7 +45,7 @@ const DEFAULT_QUESTION_GROUPS = {
       ],
     },
     "content-design": {
-      label: "Content Designer",
+      label: "콘텐츠",
       questions: [
         "잔치 콘텐츠 디자이너에 지원한 동기를 자유롭게 작성해주세요.",
         "SNS 콘텐츠 기획·제작 경험이 있다면 소개해주세요.",

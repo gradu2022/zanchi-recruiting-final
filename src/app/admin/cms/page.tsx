@@ -66,6 +66,13 @@ export default function AdminCmsPage() {
     })();
   }, [router, showToast]);
 
+  const updateGroupLabel = (track: "editor" | "designer", group: string, value: string) => {
+    setQuestionGroups((prev) => {
+      if (!prev) return prev;
+      return { ...prev, [track]: { ...prev[track], [group]: { ...prev[track][group], label: value } } };
+    });
+  };
+
   const updateQuestion = (track: "editor" | "designer", group: string, idx: number, value: string) => {
     setQuestionGroups((prev) => {
       if (!prev) return prev;
@@ -187,9 +194,12 @@ export default function AdminCmsPage() {
             <h2 style={sectionTitleStyle}>{track === "editor" ? "에디터" : "디자이너"} 질문 목록</h2>
             {Object.entries(questionGroups[track]).map(([groupKey, group]) => (
               <div key={groupKey} style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid var(--color-line)" }}>
-                <div style={{ fontWeight: 800, fontSize: 14, color: "var(--color-orange)", marginBottom: 10 }}>
-                  {group.label}
-                </div>
+                <label style={labelStyle}>팀 이름 (버튼에 표시됨)</label>
+                <input
+                  value={group.label}
+                  onChange={(e) => updateGroupLabel(track, groupKey, e.target.value)}
+                  style={{ ...inputStyle, marginBottom: 10, fontWeight: 800, color: "var(--color-orange)" }}
+                />
                 {group.questions.map((q, idx) => (
                   <div key={idx} style={{ display: "flex", gap: 6, marginBottom: 6, alignItems: "flex-start" }}>
                     <span style={qNumStyle}>{idx + 1}</span>
