@@ -118,8 +118,3 @@ export async function saveAdminSettings(payload: Record<string, unknown>) {
   });
   return res.json();
 }
-
-export async function deleteApplication(id: string) {
-  const res = await request(`/api/admin/applications/${id}/delete`, { method: "DELETE" });
-  return res.json();
-}
