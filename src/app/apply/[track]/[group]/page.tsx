@@ -46,7 +46,7 @@ export default function ApplyPage() {
         <Header showBack />
         <div style={{ maxWidth: 480, margin: "60px auto", padding: "0 24px", textAlign: "center" }}>
           <p style={{ color: "var(--color-orange-dark)" }}>{data.content.recruitmentClosedMessage}</p>
-          <Link href="/" style={{ color: "var(--color-sky, #2FA9E0)", fontSize: 13 }}>
+          <Link href="/" style={{ color: "var(--color-orange)", fontSize: 13 }}>
             홈으로 돌아가기
           </Link>
         </div>
@@ -62,7 +62,7 @@ export default function ApplyPage() {
         <Header showBack />
         <div style={{ maxWidth: 480, margin: "60px auto", padding: "0 24px", textAlign: "center" }}>
           <p style={{ color: "var(--color-sub)" }}>존재하지 않는 지원 분야입니다.</p>
-          <Link href="/" style={{ color: "var(--color-sky, #2FA9E0)", fontSize: 13 }}>
+          <Link href="/" style={{ color: "var(--color-orange)", fontSize: 13 }}>
             홈으로 돌아가기
           </Link>
         </div>

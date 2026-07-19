@@ -21,7 +21,7 @@ function buildAnswersTableHtml(answers: { question: string; answer: string }[]) 
     .map(
       (a, i) => `
       <tr>
-        <td style="padding:10px 12px;border:1px solid #e5e5e5;background:#FFF6F1;font-weight:700;vertical-align:top;white-space:nowrap;">Q${i + 1}</td>
+        <td style="padding:10px 12px;border:1px solid #e5e5e5;background:#FDECE0;font-weight:700;vertical-align:top;white-space:nowrap;">Q${i + 1}</td>
         <td style="padding:10px 12px;border:1px solid #e5e5e5;vertical-align:top;">
           <div style="font-weight:700;margin-bottom:6px;">${escapeHtml(a.question)}</div>
           <div style="white-space:pre-wrap;color:#333;">${escapeHtml(a.answer)}</div>
@@ -35,7 +35,7 @@ function buildAnswersTableHtml(answers: { question: string; answer: string }[]) 
 function buildAdminHtml(app: any, hasFile: boolean) {
   return `
     <div style="font-family:sans-serif;">
-      <h2 style="color:#F2622E;">새 지원서가 접수되었습니다 — ${escapeHtml(app.groupLabel)}</h2>
+      <h2 style="color:#FF6700;">새 지원서가 접수되었습니다 — ${escapeHtml(app.groupLabel)}</h2>
       <table style="border-collapse:collapse;margin-bottom:16px;font-size:14px;">
         <tr><td style="padding:4px 10px;color:#666;">이름</td><td style="padding:4px 10px;font-weight:700;">${escapeHtml(app.name)}</td></tr>
         <tr><td style="padding:4px 10px;color:#666;">이메일</td><td style="padding:4px 10px;">${escapeHtml(app.email)}</td></tr>
@@ -54,7 +54,7 @@ function buildAdminHtml(app: any, hasFile: boolean) {
 function buildApplicantHtml(app: any, thankYouMessage?: string) {
   return `
     <div style="font-family:sans-serif;">
-      <h2 style="color:#F2622E;">잔치(Zanchi) 지원서 접수 확인</h2>
+      <h2 style="color:#FF6700;">잔치(Zanchi) 지원서 접수 확인</h2>
       <p>${escapeHtml(app.name)}님, ${escapeHtml(thankYouMessage || "지원해주셔서 감사합니다.")}</p>
       <p style="color:#666;font-size:13px;">지원 분야: ${escapeHtml(app.groupLabel)}</p>
       ${buildAnswersTableHtml(app.answers)}

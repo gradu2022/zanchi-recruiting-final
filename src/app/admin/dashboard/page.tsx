@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
       <Header showBack />
       <div style={{ maxWidth: 880, margin: "0 auto", padding: "20px 20px 60px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: 22, margin: 0, color: "var(--color-orange)" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 21, margin: 0, color: "var(--color-black)" }}>
             관리자
           </h1>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -186,7 +186,7 @@ export default function AdminDashboardPage() {
                       padding: "4px 10px",
                       borderRadius: 999,
                       background: a.status === "합격" ? "#E9F9F1" : a.status === "불합격" ? "#FDEDEC" : "#F1F2F4",
-                      color: a.status === "합격" ? "#1fa565" : a.status === "불합격" ? "var(--color-danger)" : "var(--color-sub)",
+                      color: a.status === "합격" ? "var(--color-success)" : a.status === "불합격" ? "var(--color-danger)" : "var(--color-sub)",
                     }}
                   >
                     {a.status}

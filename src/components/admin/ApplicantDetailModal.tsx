@@ -22,7 +22,7 @@ type Application = {
 
 const STATUS_COLORS: Record<string, string> = {
   대기: "var(--color-sub)",
-  합격: "var(--color-success, #1fa565)",
+  합격: "var(--color-success)",
   불합격: "var(--color-danger)",
 };
 
@@ -76,7 +76,7 @@ const [deleting, setDeleting] = useState(false);
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(20,22,26,0.5)",
+        background: "var(--color-overlay)",
         zIndex: 60,
         display: "flex",
         alignItems: "flex-end",

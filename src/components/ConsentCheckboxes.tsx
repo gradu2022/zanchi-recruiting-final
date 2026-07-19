@@ -21,7 +21,7 @@ export default function ConsentCheckboxes({ checked, onChange }: Props) {
   return (
     <div
       style={{
-        background: "#FFF6F1",
+        background: "var(--color-orange-tint)",
         border: "1px solid var(--color-line)",
         borderRadius: 12,
         padding: "14px 16px",

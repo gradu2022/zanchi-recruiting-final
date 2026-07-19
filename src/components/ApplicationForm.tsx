@@ -111,15 +111,17 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       <Header showBack />
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "24px 20px 80px" }}>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--color-orange)" }}>
+          <div style={{ fontFamily: "var(--font-label)", fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", color: "var(--color-orange)" }}>
             {track === "editor" ? "EDITOR" : "DESIGNER"}
           </div>
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 26,
+              fontWeight: 900,
+              fontSize: 24,
+              letterSpacing: "-0.02em",
               color: "var(--color-black)",
-              margin: "4px 0 0",
+              margin: "6px 0 0",
             }}
           >
             {groupConfig.label} 지원서
@@ -182,7 +184,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
               marginBottom: 22,
               padding: "12px 14px",
               borderRadius: 10,
-              background: "#FFF6F1",
+              background: "var(--color-orange-tint)",
               color: "var(--color-orange-dark)",
               fontSize: 12.5,
               lineHeight: 1.6,

@@ -38,26 +38,30 @@ export default function HomePage() {
   return (
     <div>
       <Header />
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "60px 24px", textAlign: "center" }}>
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: "72px 24px 60px", textAlign: "center" }}>
         <h1
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: "clamp(48px, 16vw, 84px)",
-            color: "var(--color-orange)",
+            fontWeight: 900,
+            fontSize: "clamp(40px, 13vw, 64px)",
+            letterSpacing: "-0.03em",
+            color: "var(--color-black)",
             margin: 0,
           }}
         >
           {content.heroTitle}
         </h1>
-        <p style={{ color: "var(--color-sub)", marginTop: 12, fontSize: 14.5 }}>{content.heroTagline}</p>
+        <p style={{ color: "var(--color-sub)", marginTop: 14, fontSize: 14.5, lineHeight: 1.6 }}>
+          {content.heroTagline}
+        </p>
 
         {!recruitmentOpen && (
           <div
             style={{
-              marginTop: 20,
+              marginTop: 22,
               padding: "10px 14px",
-              borderRadius: 10,
-              background: "#FFF6F1",
+              borderRadius: 8,
+              background: "var(--color-orange-tint)",
               color: "var(--color-orange-dark)",
               fontSize: 13,
             }}
@@ -71,29 +75,27 @@ export default function HomePage() {
           </p>
         )}
 
-        <div style={{ marginTop: 40, display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: "var(--color-sub)", letterSpacing: 1 }}>
-            EDITOR
-          </div>
+        <div style={{ marginTop: 48, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={sectionLabelStyle}>EDITOR</div>
           {Object.entries(questionGroups.editor || {}).map(([key, g]) => (
             <Link
               key={key}
               href={recruitmentOpen ? `/apply/editor/${key}` : "#"}
               aria-disabled={!recruitmentOpen}
+              className="nav-btn"
               style={{ ...navBtnStyle, opacity: recruitmentOpen ? 1 : 0.4, pointerEvents: recruitmentOpen ? "auto" : "none" }}
             >
               {g.label} {content.editorCtaLabel}
             </Link>
           ))}
 
-          <div style={{ fontSize: 12, fontWeight: 800, color: "var(--color-sub)", letterSpacing: 1, marginTop: 16 }}>
-            DESIGNER
-          </div>
+          <div style={{ ...sectionLabelStyle, marginTop: 18 }}>DESIGNER</div>
           {Object.entries(questionGroups.designer || {}).map(([key, g]) => (
             <Link
               key={key}
               href={recruitmentOpen ? `/apply/designer/${key}` : "#"}
               aria-disabled={!recruitmentOpen}
+              className="nav-btn"
               style={{ ...navBtnStyle, opacity: recruitmentOpen ? 1 : 0.4, pointerEvents: recruitmentOpen ? "auto" : "none" }}
             >
               {g.label} {content.designerCtaLabel}
@@ -101,20 +103,36 @@ export default function HomePage() {
           ))}
         </div>
 
-        <Link href="/admin" style={{ display: "inline-block", marginTop: 40, fontSize: 12, color: "var(--color-sub)" }}>
-          관리자 로그인
+        <Link
+          href="/admin"
+          style={{
+            display: "inline-block",
+            marginTop: 48,
+            fontSize: 11.5,
+            fontFamily: "var(--font-label)",
+            letterSpacing: "0.04em",
+            color: "var(--color-sub)",
+          }}
+        >
+          ADMIN LOGIN
         </Link>
       </div>
     </div>
   );
 }
 
+const sectionLabelStyle: React.CSSProperties = {
+  fontFamily: "var(--font-label)",
+  fontSize: 12,
+  fontWeight: 700,
+  color: "var(--color-sub)",
+  letterSpacing: "0.12em",
+};
+
 const navBtnStyle: React.CSSProperties = {
   display: "block",
   padding: "14px 0",
   borderRadius: 999,
-  border: "1.5px solid var(--color-black)",
-  color: "var(--color-black)",
   fontWeight: 700,
   fontSize: 14.5,
 };

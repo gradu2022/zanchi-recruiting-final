@@ -20,7 +20,8 @@ export default function Header({ showBack = false }: { showBack?: boolean }) {
         href="/"
         style={{
           fontFamily: "var(--font-display)",
-          fontSize: 22,
+          fontWeight: 900,
+          fontSize: 19,
           color: "var(--color-black)",
           letterSpacing: "-0.02em",
         }}

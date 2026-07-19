@@ -121,7 +121,7 @@ export default function AdminCmsPage() {
     <div>
       <Header showBack />
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "24px 20px 100px" }}>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, marginBottom: 20 }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 21, marginBottom: 20 }}>
           풀 커스텀 CMS
         </h1>
 
@@ -285,7 +285,7 @@ const removeBtnStyle: React.CSSProperties = {
 const addBtnStyle: React.CSSProperties = {
   fontSize: 12.5,
   color: "#fff",
-  background: "var(--color-sky)",
+  background: "var(--color-black)",
   border: "none",
   borderRadius: 8,
   padding: "6px 12px",

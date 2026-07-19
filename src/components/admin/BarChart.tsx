@@ -18,7 +18,7 @@ export default function BarChart({ summary }: { summary: SummaryItem[] }) {
             style={{
               height: `${(s.count / max) * 130 + 4}px`,
               borderRadius: "8px 8px 0 0",
-              background: s.track === "editor" ? "var(--color-orange)" : "var(--color-sky, #2FA9E0)",
+              background: s.track === "editor" ? "var(--color-orange)" : "var(--color-black)",
               transition: "height 0.3s",
             }}
           />

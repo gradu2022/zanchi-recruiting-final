@@ -19,7 +19,7 @@ export default function SuccessModal({ open, message = DEFAULT_THANK_YOU_MESSAGE
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(20,22,26,0.5)",
+        background: "var(--color-overlay)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Black_Han_Sans, Noto_Sans_KR } from "next/font/google";
+import { Noto_Sans_KR, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 
-/* 커스텀 폰트: 로고/타이틀용 임팩트 폰트 + 본문용 고딕 폰트 */
-const display = Black_Han_Sans({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
+/* 본문/제목 공용 고딕 폰트(굵기로 위계 구분) + 영문 라벨/태그용 지오메트릭 산세리프 */
 const body = Noto_Sans_KR({
   weight: ["400", "500", "700", "900"],
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const label = Space_Grotesk({
+  weight: ["500", "700"],
+  subsets: ["latin"],
+  variable: "--font-label",
   display: "swap",
 });
 
@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={`${display.variable} ${body.variable}`}>
+    <html lang="ko" className={`${body.variable} ${label.variable}`}>
       <body>
         <ToastProvider>
           <div className="app-shell">{children}</div>

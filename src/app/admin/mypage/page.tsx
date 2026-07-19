@@ -62,7 +62,7 @@ export default function AdminMyPage() {
     <div>
       <Header showBack />
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 20px 80px" }}>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, marginBottom: 20 }}>마이페이지</h1>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 21, marginBottom: 20 }}>마이페이지</h1>
 
         <section style={cardStyle}>
           <label style={labelStyle}>관리자 이름</label>

@@ -37,7 +37,8 @@ export default function AdminLoginPage() {
         <h1
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: 26,
+            fontWeight: 900,
+            fontSize: 23,
             textAlign: "center",
             marginBottom: 28,
           }}
