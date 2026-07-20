@@ -2,8 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ExternalLink, Instagram } from "lucide-react";
 import Header from "@/components/Header";
 import { getSiteContent, SiteContentResponse } from "@/lib/siteContent";
+
+const HOMEPAGE_URL = "https://welcometozanchi.com/";
+const INSTAGRAM_URL = "https://www.instagram.com/zanchi_sinchon?igsh=MWRyeG90eTZ0b2Nhag==";
 
 export default function HomePage() {
   const [data, setData] = useState<SiteContentResponse | null>(null);
@@ -73,7 +77,7 @@ export default function HomePage() {
           </p>
         )}
 
-        <div style={{ marginTop: 48, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div id="apply-section" style={{ marginTop: 48, display: "flex", flexDirection: "column", gap: 10 }}>
           <div style={sectionLabelStyle}>EDITOR</div>
           {Object.entries(questionGroups.editor || {}).map(([key, g]) => (
             <Link
@@ -99,6 +103,25 @@ export default function HomePage() {
               {g.label} {content.designerCtaLabel}
             </Link>
           ))}
+
+          <a
+            href={HOMEPAGE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="nav-btn"
+            style={{ ...navBtnStyle, marginTop: 18, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+          >
+            <ExternalLink size={15} /> 홈페이지 바로가기
+          </a>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="nav-btn"
+            style={{ ...navBtnStyle, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+          >
+            <Instagram size={15} /> 잔치 플러스 바로가기
+          </a>
         </div>
 
         <Link
@@ -115,6 +138,29 @@ export default function HomePage() {
           ADMIN LOGIN
         </Link>
       </div>
+
+      <a
+        href="#apply-section"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }}
+        style={{
+          position: "fixed",
+          right: 20,
+          bottom: 24,
+          zIndex: 40,
+          padding: "14px 24px",
+          borderRadius: 999,
+          background: "var(--color-orange)",
+          color: "#fff",
+          fontWeight: 800,
+          fontSize: 14.5,
+          boxShadow: "0 8px 22px rgba(255,103,0,0.4)",
+        }}
+      >
+        지원하기
+      </a>
     </div>
   );
 }
