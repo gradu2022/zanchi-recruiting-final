@@ -33,12 +33,20 @@ export async function POST(req: Request) {
     const email = String(formData.get("email") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
     const university = String(formData.get("university") || "").trim();
+    const secondChoiceTeam = String(formData.get("secondChoiceTeam") || "").trim();
 
     let answersRaw: string[] = [];
     try {
       answersRaw = JSON.parse(String(formData.get("answers") || "[]"));
     } catch {
       answersRaw = [];
+    }
+
+    let interviewAvailability: string[] = [];
+    try {
+      interviewAvailability = JSON.parse(String(formData.get("interviewAvailability") || "[]"));
+    } catch {
+      interviewAvailability = [];
     }
 
     const fileEntry = formData.get("file");
@@ -70,6 +78,9 @@ export async function POST(req: Request) {
       !email ||
       !phone ||
       !university ||
+      (track === "editor" && !secondChoiceTeam) ||
+      !Array.isArray(interviewAvailability) ||
+      interviewAvailability.length === 0 ||
       !Array.isArray(answersRaw) ||
       answersRaw.length !== groupConfig.questions.length ||
       answersRaw.some((a) => !String(a || "").trim());
@@ -94,6 +105,8 @@ export async function POST(req: Request) {
       email,
       phone,
       university,
+      secondChoiceTeam: track === "editor" ? secondChoiceTeam : "",
+      interviewAvailability,
       answers,
       file: file
         ? { originalName: file.name, mimeType: file.type, size: file.size }

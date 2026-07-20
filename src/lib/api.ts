@@ -8,6 +8,8 @@ export type SubmitPayload = {
   email: string;
   phone: string;
   university: string;
+  secondChoiceTeam: string;
+  interviewAvailability: string[];
   answers: string[];
   file: File | null;
 };
@@ -20,6 +22,8 @@ export async function submitApplication(payload: SubmitPayload): Promise<{ ok: b
   formData.append("email", payload.email);
   formData.append("phone", payload.phone);
   formData.append("university", payload.university);
+  formData.append("secondChoiceTeam", payload.secondChoiceTeam);
+  formData.append("interviewAvailability", JSON.stringify(payload.interviewAvailability));
   formData.append("answers", JSON.stringify(payload.answers));
   if (payload.file) formData.append("file", payload.file);
 

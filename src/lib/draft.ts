@@ -8,6 +8,8 @@ export type DraftData = {
   email: string;
   phone: string;
   university: string;
+  secondChoiceTeam: string;
+  interviewAvailability: string[];
   answers: string[];
   savedAt: string;
 };

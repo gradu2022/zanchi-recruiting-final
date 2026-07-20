@@ -14,6 +14,8 @@ type Application = {
   email: string;
   phone: string;
   university?: string;
+  secondChoiceTeam?: string;
+  interviewAvailability?: string[];
   status: "대기" | "합격" | "불합격";
   answers: { question: string; answer: string }[];
   file?: { originalName?: string; storedName?: string; gridfsId?: string };
@@ -112,6 +114,9 @@ const [deleting, setDeleting] = useState(false);
         <div style={{ fontSize: 13, color: "var(--color-sub)", marginTop: 10, lineHeight: 1.8 }}>
           이메일: {application.email} · 연락처: {application.phone} · 대학교:{" "}
           {application.university || "미입력"}
+          {application.secondChoiceTeam && <> · 2지망: {application.secondChoiceTeam}</>}
+          <br />
+          면접 가능 시간: {(application.interviewAvailability || []).join(", ") || "미입력"}
           <br />
           접수: {new Date(application.createdAt).toLocaleString("ko-KR")}
         </div>

@@ -9,6 +9,8 @@ import FileUploadBox from "./FileUploadBox";
 import ConsentCheckboxes, { CONSENT_ITEMS } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
 import EditableText from "./admin/EditableText";
+import Linkify from "./Linkify";
+import InterviewTimePicker from "./InterviewTimePicker";
 import { useToast } from "./Toast";
 import { saveDraft, loadDraft, clearDraft } from "@/lib/draft";
 import { submitApplication } from "@/lib/api";
@@ -22,9 +24,10 @@ type Props = {
   group: string;
   groupConfig: QuestionGroup;
   content: SiteContent;
+  editorGroups?: Record<string, { label: string }>;
 };
 
-export default function ApplicationForm({ track, group, groupConfig, content }: Props) {
+export default function ApplicationForm({ track, group, groupConfig, content, editorGroups }: Props) {
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -32,6 +35,8 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [university, setUniversity] = useState("");
+  const [secondChoiceTeam, setSecondChoiceTeam] = useState("");
+  const [interviewAvailability, setInterviewAvailability] = useState<string[]>([]);
   const [answers, setAnswers] = useState<string[]>(groupConfig.questions.map(() => ""));
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState<boolean[]>(CONSENT_ITEMS.map(() => false));
@@ -59,6 +64,8 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       setEmail(draft.email || "");
       setPhone(draft.phone || "");
       setUniversity(draft.university || "");
+      setSecondChoiceTeam(draft.secondChoiceTeam || "");
+      setInterviewAvailability(draft.interviewAvailability || []);
       if (draft.answers?.length === groupConfig.questions.length) {
         setAnswers(draft.answers);
       }
@@ -71,10 +78,10 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   useEffect(() => {
     if (!hasHydrated.current) return;
     const t = setTimeout(() => {
-      saveDraft(track, group, { name, email, phone, university, answers });
+      saveDraft(track, group, { name, email, phone, university, secondChoiceTeam, interviewAvailability, answers });
     }, 500);
     return () => clearTimeout(t);
-  }, [name, email, phone, university, answers, track, group]);
+  }, [name, email, phone, university, secondChoiceTeam, interviewAvailability, answers, track, group]);
 
   const updateAnswer = (idx: number, v: string) => {
     setAnswers((prev) => {
@@ -88,8 +95,10 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
 
   const validate = () => {
     const missingIdentity = !name.trim() || !email.trim() || !phone.trim() || !university.trim();
+    const missingSecondChoice = track === "editor" && !secondChoiceTeam.trim();
+    const missingInterview = interviewAvailability.length === 0;
     const missingAnswer = answers.some((a) => !a.trim());
-    if (missingIdentity || missingAnswer) {
+    if (missingIdentity || missingSecondChoice || missingInterview || missingAnswer) {
       showToast(content.missingRequiredMessage, "error");
       return false;
     }
@@ -110,6 +119,8 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
         email,
         phone,
         university,
+        secondChoiceTeam,
+        interviewAvailability,
         answers,
         file,
       });
@@ -234,7 +245,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
               whiteSpace: "pre-wrap",
             }}
           >
-            {groupConfig.description}
+            <Linkify text={groupConfig.description} />
           </section>
         )}
 
@@ -249,7 +260,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
             />
             <input
               style={inputStyle}
-              placeholder="이메일 * (예: zanchi@gmail.com — 활동 시 구글 드라이브를 사용하므로 구글 메일이면 더 좋습니다)"
+              placeholder="이메일 * (활동 시 구글 드라이브를 사용하므로 구글 메일이면 더 좋습니다)"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -283,7 +294,43 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
                 ))}
               </div>
             </div>
+
+            {track === "editor" && editorGroups && (
+              <div>
+                <div style={{ fontSize: 13, color: "var(--color-sub)", marginBottom: 8 }}>2지망 팀 *</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {Object.entries(editorGroups)
+                    .filter(([key]) => key !== group)
+                    .map(([key, g]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSecondChoiceTeam(g.label)}
+                        style={{
+                          padding: "8px 16px",
+                          borderRadius: 999,
+                          border: `1.5px solid ${secondChoiceTeam === g.label ? "var(--color-orange)" : "var(--color-line-strong)"}`,
+                          background: secondChoiceTeam === g.label ? "var(--color-orange-tint)" : "transparent",
+                          color: secondChoiceTeam === g.label ? "var(--color-orange-dark)" : "var(--color-black)",
+                          fontWeight: 700,
+                          fontSize: 13,
+                        }}
+                      >
+                        {g.label}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
+        </section>
+
+        <section style={{ marginBottom: 28 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 4 }}>면접 가능 시간 *</h2>
+          <p style={{ fontSize: 12.5, color: "var(--color-sub)", marginTop: 0, marginBottom: 10 }}>
+            면접은 화상으로 진행됩니다. 가능한 날짜와 시간대를 모두 선택해주세요.
+          </p>
+          <InterviewTimePicker value={interviewAvailability} onChange={setInterviewAvailability} />
         </section>
 
         <section style={{ marginBottom: 8 }}>

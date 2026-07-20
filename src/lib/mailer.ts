@@ -41,6 +41,12 @@ function buildAdminHtml(app: any, hasFile: boolean) {
         <tr><td style="padding:4px 10px;color:#666;">이메일</td><td style="padding:4px 10px;">${escapeHtml(app.email)}</td></tr>
         <tr><td style="padding:4px 10px;color:#666;">연락처</td><td style="padding:4px 10px;">${escapeHtml(app.phone)}</td></tr>
         <tr><td style="padding:4px 10px;color:#666;">대학교</td><td style="padding:4px 10px;">${escapeHtml(app.university || "미입력")}</td></tr>
+        ${
+          app.secondChoiceTeam
+            ? `<tr><td style="padding:4px 10px;color:#666;">2지망 팀</td><td style="padding:4px 10px;">${escapeHtml(app.secondChoiceTeam)}</td></tr>`
+            : ""
+        }
+        <tr><td style="padding:4px 10px;color:#666;vertical-align:top;">면접 가능 시간</td><td style="padding:4px 10px;">${escapeHtml((app.interviewAvailability || []).join(", ") || "미입력")}</td></tr>
       </table>
       ${buildAnswersTableHtml(app.answers)}
       ${

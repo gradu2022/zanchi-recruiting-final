@@ -42,7 +42,7 @@ const SettingsSchema = new Schema(
       applicationInfoNotice: {
         type: String,
         default:
-          "지원서 마감 일자: 추후 공지\n면접 일자: 8/23(일) ~ 8/25(화) (비대면 면접)\n최종 합격 발표: 8/30(일)\n오프라인 OT: 9/3(목), 신촌\nMT: 9/4(금) ~ 9/5(토)",
+          "신촌 웹매거진 \"잔치\"의 새로운 잔치꾼을 모집합니다!\n\n잔치와 함께 활동하고자 지원해주신 예비 잔치꾼 여러분 환영합니다.\n아래 문항에 솔직한 답변 부탁드리겠습니다 :)\n\n지원서 마감 일자: 추후 공지\n면접 일자: 8/23(일) ~ 8/25(화) (비대면 면접)\n최종 합격 발표: 8/30(일)\n오프라인 OT: 9/3(목), 신촌\nMT: 9/4(금) ~ 9/5(토)\n\n함께 벌입시다, 잔치!\nwww.welcometozanchi.com",
       },
       contactOpenChatLink: { type: String, default: "" },
       contactPhone: { type: String, default: "" },

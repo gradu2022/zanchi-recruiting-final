@@ -5,6 +5,7 @@ import { Pencil, Check, X } from "lucide-react";
 import { getAdminToken } from "@/lib/adminAuth";
 import { saveAdminSettings } from "@/lib/adminApi";
 import { useToast } from "@/components/Toast";
+import Linkify from "@/components/Linkify";
 
 // 관리자가 로그인한 상태로 실제 지원서 페이지를 열면, 이 컴포넌트로 감싼 문구마다
 // 오른쪽 위에 작은 연필 아이콘이 나타나고 클릭하면 바로 그 자리에서 수정·저장할 수 있습니다.
@@ -65,7 +66,9 @@ export default function EditableText({
   if (!isAdmin) {
     if (!value) return null;
     return (
-      <span style={{ whiteSpace: multiline ? "pre-wrap" : undefined, ...style }}>{value}</span>
+      <span style={{ whiteSpace: multiline ? "pre-wrap" : undefined, ...style }}>
+        <Linkify text={value} />
+      </span>
     );
   }
 
@@ -110,7 +113,7 @@ export default function EditableText({
   return (
     <div style={{ position: "relative", ...style }}>
       <span style={{ whiteSpace: multiline ? "pre-wrap" : undefined, color: value ? undefined : "var(--color-sub)" }}>
-        {value || emptyLabel}
+        {value ? <Linkify text={value} /> : emptyLabel}
       </span>
       <button onClick={startEdit} aria-label="편집" style={pencilBtnStyle}>
         <Pencil size={11} />

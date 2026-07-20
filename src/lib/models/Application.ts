@@ -19,6 +19,10 @@ const ApplicationSchema = new Schema(
     phone: { type: String, required: true, trim: true },
     university: { type: String, trim: true, default: "" },
     studentId: { type: String, trim: true, default: "" },
+    // 에디터 지원자 한정: 2지망 팀(art/place/people)
+    secondChoiceTeam: { type: String, trim: true, default: "" },
+    // 면접 가능한 날짜+시간대 목록 (예: ["8/23 (일) 10:00 - 10:30", ...])
+    interviewAvailability: { type: [String], default: [] },
 
     answers: { type: [AnswerSchema], required: true },
 

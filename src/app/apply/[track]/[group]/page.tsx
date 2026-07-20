@@ -71,6 +71,12 @@ export default function ApplyPage() {
   }
 
   return (
-    <ApplicationForm track={track} group={group} groupConfig={groupConfig} content={data.content} />
+    <ApplicationForm
+      track={track}
+      group={group}
+      groupConfig={groupConfig}
+      content={data.content}
+      editorGroups={track === "editor" ? data.questionGroups?.editor : undefined}
+    />
   );
 }
