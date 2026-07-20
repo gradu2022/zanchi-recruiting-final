@@ -6,7 +6,7 @@ import { Mail, MessageCircle, Phone } from "lucide-react";
 import Header from "./Header";
 import CharCounterTextarea from "./CharCounterTextarea";
 import FileUploadBox from "./FileUploadBox";
-import ConsentCheckboxes, { CONSENT_ITEMS } from "./ConsentCheckboxes";
+import ConsentCheckboxes, { CONSENT_FLAT } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
 import EditableText from "./admin/EditableText";
 import Linkify from "./Linkify";
@@ -39,7 +39,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
   const [interviewAvailability, setInterviewAvailability] = useState<string[]>([]);
   const [answers, setAnswers] = useState<string[]>(groupConfig.questions.map(() => ""));
   const [file, setFile] = useState<File | null>(null);
-  const [consent, setConsent] = useState<boolean[]>(CONSENT_ITEMS.map(() => false));
+  const [consent, setConsent] = useState<boolean[]>(CONSENT_FLAT.map(() => false));
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -49,7 +49,13 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
   const [openChatLink, setOpenChatLink] = useState(content.contactOpenChatLink || "");
   const [contactPhone, setContactPhone] = useState(content.contactPhone || "");
   const [contactPhoneNote, setContactPhoneNote] = useState(content.contactPhoneNote || "");
+  const [fileEmailNotice, setFileEmailNotice] = useState(content.fileEmailNoticeMessage || "");
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const interviewDays = (content.interviewDays || "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   useEffect(() => {
     setIsAdmin(!!getAdminToken());
@@ -330,11 +336,11 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
           <p style={{ fontSize: 12.5, color: "var(--color-sub)", marginTop: 0, marginBottom: 10 }}>
             면접은 화상으로 진행됩니다. 가능한 날짜와 시간대를 모두 선택해주세요.
           </p>
-          <InterviewTimePicker value={interviewAvailability} onChange={setInterviewAvailability} />
+          <InterviewTimePicker days={interviewDays} value={interviewAvailability} onChange={setInterviewAvailability} />
         </section>
 
         <section style={{ marginBottom: 8 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>지원자 필수 질문</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 26 }}>지원자 필수 질문</h2>
           {groupConfig.questions.map((q, idx) => (
             <CharCounterTextarea
               key={idx}
@@ -348,7 +354,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
 
         <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
 
-        {content.fileEmailNoticeMessage && (
+        {(fileEmailNotice || isAdmin) && (
           <div
             style={{
               display: "flex",
@@ -365,11 +371,18 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             }}
           >
             <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span>{content.fileEmailNoticeMessage}</span>
+            <EditableText
+              value={fileEmailNotice}
+              fieldKey="fileEmailNoticeMessage"
+              onSaved={setFileEmailNotice}
+              multiline
+              placeholder="첨부파일 이메일 전송 안내 문구"
+              style={{ flex: 1 }}
+            />
           </div>
         )}
 
-        <ConsentCheckboxes checked={consent} onChange={setConsent} />
+        <ConsentCheckboxes checked={consent} onChange={setConsent} content={content} />
 
         <button
           onClick={handleSubmit}

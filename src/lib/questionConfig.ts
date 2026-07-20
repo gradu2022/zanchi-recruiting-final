@@ -18,14 +18,7 @@ export type Track = "editor" | "designer";
 
 export const UNIVERSITY_OPTIONS = ["연세대", "이화여대", "서강대", "홍익대"];
 
-// 면접 가능 시간 선택 UI에 쓰이는 날짜/시간대 목록입니다.
-// 학기마다 면접 일자가 바뀌면 이 배열만 고치면 됩니다.
-export const INTERVIEW_DAYS = [
-  { key: "8-23", label: "8/23 (일)" },
-  { key: "8-24", label: "8/24 (월)" },
-  { key: "8-25", label: "8/25 (화)" },
-];
-
+// 면접 가능 시간 선택 UI에 쓰이는 시간대 목록입니다. (날짜 목록은 /admin/cms에서 관리자가 직접 편집)
 export const INTERVIEW_TIME_SLOTS = (() => {
   const slots: string[] = [];
   for (let h = 10; h < 21; h++) {

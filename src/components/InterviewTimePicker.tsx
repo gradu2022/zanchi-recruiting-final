@@ -1,17 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { INTERVIEW_DAYS, INTERVIEW_TIME_SLOTS } from "@/lib/questionConfig";
+import { useEffect, useState } from "react";
+import { INTERVIEW_TIME_SLOTS } from "@/lib/questionConfig";
 
 type Props = {
+  days: string[];
   value: string[];
   onChange: (next: string[]) => void;
 };
 
 // 구글폼처럼 시간대 60여 개를 한 줄로 쭉 나열하면 고르기 번거로워서,
 // 날짜를 탭으로 먼저 고르고 그 날짜의 시간대만 스크롤 목록으로 보여주는 방식으로 바꿨습니다.
-export default function InterviewTimePicker({ value, onChange }: Props) {
-  const [activeDay, setActiveDay] = useState(INTERVIEW_DAYS[0].key);
+// 날짜 목록(days) 자체는 /admin/cms의 "면접 가능 날짜" 문구에서 관리자가 직접 고칩니다.
+export default function InterviewTimePicker({ days, value, onChange }: Props) {
+  const [activeDay, setActiveDay] = useState(days[0] || "");
+
+  useEffect(() => {
+    if (!days.includes(activeDay)) setActiveDay(days[0] || "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [days.join("|")]);
 
   const slotValue = (dayLabel: string, slot: string) => `${dayLabel} ${slot}`;
 
@@ -22,21 +29,23 @@ export default function InterviewTimePicker({ value, onChange }: Props) {
 
   const countForDay = (dayLabel: string) => value.filter((v) => v.startsWith(dayLabel)).length;
 
-  const activeDayInfo = INTERVIEW_DAYS.find((d) => d.key === activeDay)!;
+  if (days.length === 0) {
+    return <p style={{ fontSize: 13, color: "var(--color-sub)" }}>면접 가능 날짜가 아직 설정되지 않았습니다.</p>;
+  }
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-        {INTERVIEW_DAYS.map((d) => {
-          const count = countForDay(d.label);
-          const active = d.key === activeDay;
+      <div style={{ display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" }}>
+        {days.map((d) => {
+          const count = countForDay(d);
+          const active = d === activeDay;
           return (
             <button
-              key={d.key}
+              key={d}
               type="button"
-              onClick={() => setActiveDay(d.key)}
+              onClick={() => setActiveDay(d)}
               style={{
-                flex: 1,
+                flex: "1 0 auto",
                 padding: "10px 6px",
                 borderRadius: 10,
                 border: `1.5px solid ${active ? "var(--color-orange)" : "var(--color-line-strong)"}`,
@@ -47,7 +56,7 @@ export default function InterviewTimePicker({ value, onChange }: Props) {
                 position: "relative",
               }}
             >
-              {d.label}
+              {d}
               {count > 0 && (
                 <span
                   style={{
@@ -76,7 +85,7 @@ export default function InterviewTimePicker({ value, onChange }: Props) {
         }}
       >
         {INTERVIEW_TIME_SLOTS.map((slot) => {
-          const v = slotValue(activeDayInfo.label, slot);
+          const v = slotValue(activeDay, slot);
           const checked = value.includes(v);
           return (
             <label
@@ -95,7 +104,7 @@ export default function InterviewTimePicker({ value, onChange }: Props) {
               <input
                 type="checkbox"
                 checked={checked}
-                onChange={() => toggleSlot(activeDayInfo.label, slot)}
+                onChange={() => toggleSlot(activeDay, slot)}
                 style={{ accentColor: "var(--color-orange)" }}
               />
               {slot}

@@ -50,6 +50,45 @@ const SettingsSchema = new Schema(
         type: String,
         default: "지원 관련 문의사항은 위 오픈채팅방 또는 아래 번호로 연락해주세요.",
       },
+      // 면접 가능 날짜 목록 — 한 줄에 하나씩. 학기마다 관리자가 /admin/cms에서 직접 고칠 수 있습니다.
+      interviewDays: {
+        type: String,
+        default: "8/23 (일)\n8/24 (월)\n8/25 (화)",
+      },
+      // 마무리 체크박스 문구 (그룹1: 참여 여부 3개 / 그룹2: OT·MT 2개 / 그룹3: 개인정보·최종확인 3개)
+      consentZanplus: {
+        type: String,
+        default: "[필수] 잔치 신촌+(부계정, @zanchi_sinchon) 콘텐츠 제작에 참여할 의향이 있습니다.",
+      },
+      consentSemester: {
+        type: String,
+        default: "[필수] 잔치는 2학기 연속 활동을 필수로 합니다. 2학기 연속 활동이 가능합니다.",
+      },
+      consentFee: {
+        type: String,
+        default:
+          "[필수] 한 학기 활동비 5만 원(이 중 1만 원은 회의 지각·불참 벌금을 제외하고 학기 후 환급)에 동의합니다.",
+      },
+      consentOT: {
+        type: String,
+        default: "[필수] 9월 3일(목) 진행되는 오프라인 OT에 참여 가능합니다.",
+      },
+      consentMT: {
+        type: String,
+        default: "[필수] 9월 4일(금) ~ 9월 5일(토) 1박 2일 MT에 참여 가능합니다.",
+      },
+      consentPrivacyCollect: {
+        type: String,
+        default: "[필수] 개인정보 수집 및 이용에 동의합니다.",
+      },
+      consentPrivacyDestroy: {
+        type: String,
+        default: "[필수] 수집된 개인정보와 파일은 지원자 선발 이후 전부 폐기됨에 동의합니다.",
+      },
+      consentFinal: {
+        type: String,
+        default: "[필수] 지원서는 한 번 제출하면 수정이 어렵습니다. 내용을 다시 한 번 확인하셨습니까?",
+      },
     },
 
     // track -> group -> { label, questions: string[] }

@@ -32,6 +32,19 @@ const TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
   { key: "contactOpenChatLink", label: "문의 오픈채팅방 링크" },
   { key: "contactPhone", label: "문의 전화번호 (예: 010-1234-5678)" },
   { key: "contactPhoneNote", label: "문의 안내 문구", multiline: true },
+  {
+    key: "interviewDays",
+    label: "면접 가능 날짜 (한 줄에 하나씩, 예: 8/23 (일))",
+    multiline: true,
+  },
+  { key: "consentZanplus", label: "체크박스 ① 잔플(신촌+) 참여 의향", multiline: true },
+  { key: "consentSemester", label: "체크박스 ② 2학기 연속 활동 가능", multiline: true },
+  { key: "consentFee", label: "체크박스 ③ 활동비 동의", multiline: true },
+  { key: "consentOT", label: "체크박스 ④ 오프라인 OT 참여 (굵게 표시됨)", multiline: true },
+  { key: "consentMT", label: "체크박스 ⑤ MT 참여 (굵게 표시됨)", multiline: true },
+  { key: "consentPrivacyCollect", label: "체크박스 ⑥ 개인정보 수집 동의", multiline: true },
+  { key: "consentPrivacyDestroy", label: "체크박스 ⑦ 개인정보 폐기 동의", multiline: true },
+  { key: "consentFinal", label: "체크박스 ⑧ 제출 전 최종 확인", multiline: true },
 ];
 
 export default function AdminCmsPage() {

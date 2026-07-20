@@ -19,6 +19,15 @@ export type SiteContent = {
   contactOpenChatLink: string;
   contactPhone: string;
   contactPhoneNote: string;
+  interviewDays: string;
+  consentZanplus: string;
+  consentSemester: string;
+  consentFee: string;
+  consentOT: string;
+  consentMT: string;
+  consentPrivacyCollect: string;
+  consentPrivacyDestroy: string;
+  consentFinal: string;
 };
 
 export type SiteContentResponse = {
