@@ -39,6 +39,17 @@ const SettingsSchema = new Schema(
         default:
           "첨부파일은 업로드 후 welcometozanchi@gmail.com으로도 함께 보내주세요. (파일명 예시: OO팀_홍길동)",
       },
+      applicationInfoNotice: {
+        type: String,
+        default:
+          "지원서 마감 일자: 추후 공지\n면접 일자: 8/23(일) ~ 8/25(화) (비대면 면접)\n최종 합격 발표: 8/30(일)\n오프라인 OT: 9/3(목), 신촌\nMT: 9/4(금) ~ 9/5(토)",
+      },
+      contactOpenChatLink: { type: String, default: "" },
+      contactPhone: { type: String, default: "" },
+      contactPhoneNote: {
+        type: String,
+        default: "지원 관련 문의사항은 위 오픈채팅방 또는 아래 번호로 연락해주세요.",
+      },
     },
 
     // track -> group -> { label, questions: string[] }

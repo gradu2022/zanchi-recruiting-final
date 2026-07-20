@@ -1,4 +1,4 @@
-export type QuestionGroup = { label: string; questions: string[] };
+export type QuestionGroup = { label: string; description?: string; questions: string[] };
 export type QuestionGroups = {
   editor: Record<string, QuestionGroup>;
   designer: Record<string, QuestionGroup>;
@@ -15,6 +15,10 @@ export type SiteContent = {
   missingRequiredMessage: string;
   recruitmentClosedMessage: string;
   fileEmailNoticeMessage: string;
+  applicationInfoNotice: string;
+  contactOpenChatLink: string;
+  contactPhone: string;
+  contactPhoneNote: string;
 };
 
 export type SiteContentResponse = {

@@ -17,6 +17,7 @@ const ApplicationSchema = new Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
+    university: { type: String, trim: true, default: "" },
     studentId: { type: String, trim: true, default: "" },
 
     answers: { type: [AnswerSchema], required: true },

@@ -10,10 +10,13 @@
 
 export type QuestionGroup = {
   label: string;
+  description?: string;
   questions: string[];
 };
 
 export type Track = "editor" | "designer";
+
+export const UNIVERSITY_OPTIONS = ["연세대", "이화여대", "서강대", "홍익대", "기타"];
 
 export const QUESTION_CONFIG: Record<Track, Record<string, QuestionGroup>> = {
   editor: {

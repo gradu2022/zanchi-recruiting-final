@@ -7,7 +7,7 @@ import { useToast } from "@/components/Toast";
 import { getAdminToken, clearAdminToken } from "@/lib/adminAuth";
 import { fetchAdminSettings, saveAdminSettings } from "@/lib/adminApi";
 
-type QuestionGroup = { label: string; questions: string[] };
+type QuestionGroup = { label: string; description?: string; questions: string[] };
 type QuestionGroups = {
   editor: Record<string, QuestionGroup>;
   designer: Record<string, QuestionGroup>;
@@ -24,6 +24,14 @@ const TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
   { key: "fileTooLargeMessage", label: "파일 용량 초과 알림 멘트", multiline: true },
   { key: "missingRequiredMessage", label: "필수 응답 누락 알림 멘트", multiline: true },
   { key: "recruitmentClosedMessage", label: "모집 마감 시 안내 멘트", multiline: true },
+  {
+    key: "applicationInfoNotice",
+    label: "지원 안내 (마감일·면접·발표·OT·MT 일정 등, 지원서 상단에 표시됨)",
+    multiline: true,
+  },
+  { key: "contactOpenChatLink", label: "문의 오픈채팅방 링크" },
+  { key: "contactPhone", label: "문의 전화번호 (예: 010-1234-5678)" },
+  { key: "contactPhoneNote", label: "문의 안내 문구", multiline: true },
 ];
 
 export default function AdminCmsPage() {
@@ -70,6 +78,13 @@ export default function AdminCmsPage() {
     setQuestionGroups((prev) => {
       if (!prev) return prev;
       return { ...prev, [track]: { ...prev[track], [group]: { ...prev[track][group], label: value } } };
+    });
+  };
+
+  const updateGroupDescription = (track: "editor" | "designer", group: string, value: string) => {
+    setQuestionGroups((prev) => {
+      if (!prev) return prev;
+      return { ...prev, [track]: { ...prev[track], [group]: { ...prev[track][group], description: value } } };
     });
   };
 
@@ -199,6 +214,13 @@ export default function AdminCmsPage() {
                   value={group.label}
                   onChange={(e) => updateGroupLabel(track, groupKey, e.target.value)}
                   style={{ ...inputStyle, marginBottom: 10, fontWeight: 800, color: "var(--color-orange)" }}
+                />
+                <label style={labelStyle}>미션/소개 문구 (선택 — 지원서 상단에 표시됨)</label>
+                <textarea
+                  rows={4}
+                  value={group.description || ""}
+                  onChange={(e) => updateGroupDescription(track, groupKey, e.target.value)}
+                  style={{ ...inputStyle, marginBottom: 14, resize: "vertical" }}
                 />
                 {group.questions.map((q, idx) => (
                   <div key={idx} style={{ display: "flex", gap: 6, marginBottom: 6, alignItems: "flex-start" }}>

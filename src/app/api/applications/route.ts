@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const name = String(formData.get("name") || "").trim();
     const email = String(formData.get("email") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
-    const studentId = String(formData.get("studentId") || "").trim();
+    const university = String(formData.get("university") || "").trim();
 
     let answersRaw: string[] = [];
     try {
@@ -69,6 +69,7 @@ export async function POST(req: Request) {
       !name ||
       !email ||
       !phone ||
+      !university ||
       !Array.isArray(answersRaw) ||
       answersRaw.length !== groupConfig.questions.length ||
       answersRaw.some((a) => !String(a || "").trim());
@@ -92,7 +93,7 @@ export async function POST(req: Request) {
       name,
       email,
       phone,
-      studentId,
+      university,
       answers,
       file: file
         ? { originalName: file.name, mimeType: file.type, size: file.size }

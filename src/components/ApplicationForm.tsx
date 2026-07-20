@@ -2,15 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 import Header from "./Header";
 import CharCounterTextarea from "./CharCounterTextarea";
 import FileUploadBox from "./FileUploadBox";
 import ConsentCheckboxes, { CONSENT_ITEMS } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
+import EditableText from "./admin/EditableText";
 import { useToast } from "./Toast";
 import { saveDraft, loadDraft, clearDraft } from "@/lib/draft";
 import { submitApplication } from "@/lib/api";
+import { getAdminToken } from "@/lib/adminAuth";
+import { UNIVERSITY_OPTIONS } from "@/lib/questionConfig";
 import type { QuestionGroup, Track } from "@/lib/questionConfig";
 import type { SiteContent } from "@/lib/siteContent";
 
@@ -28,12 +31,24 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [studentId, setStudentId] = useState("");
+  const [university, setUniversity] = useState("");
   const [answers, setAnswers] = useState<string[]>(groupConfig.questions.map(() => ""));
   const [file, setFile] = useState<File | null>(null);
   const [consent, setConsent] = useState<boolean[]>(CONSENT_ITEMS.map(() => false));
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // 관리자가 로그인한 상태로 이 페이지를 열면 연필 아이콘으로 바로 수정할 수 있는 문구들.
+  // (저장되면 이 화면에도 즉시 반영되도록 로컬 상태로 들고 있습니다.)
+  const [infoNotice, setInfoNotice] = useState(content.applicationInfoNotice || "");
+  const [openChatLink, setOpenChatLink] = useState(content.contactOpenChatLink || "");
+  const [contactPhone, setContactPhone] = useState(content.contactPhone || "");
+  const [contactPhoneNote, setContactPhoneNote] = useState(content.contactPhoneNote || "");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(!!getAdminToken());
+  }, []);
 
   const hasHydrated = useRef(false);
 
@@ -43,7 +58,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
       setName(draft.name || "");
       setEmail(draft.email || "");
       setPhone(draft.phone || "");
-      setStudentId(draft.studentId || "");
+      setUniversity(draft.university || "");
       if (draft.answers?.length === groupConfig.questions.length) {
         setAnswers(draft.answers);
       }
@@ -56,10 +71,10 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   useEffect(() => {
     if (!hasHydrated.current) return;
     const t = setTimeout(() => {
-      saveDraft(track, group, { name, email, phone, studentId, answers });
+      saveDraft(track, group, { name, email, phone, university, answers });
     }, 500);
     return () => clearTimeout(t);
-  }, [name, email, phone, studentId, answers, track, group]);
+  }, [name, email, phone, university, answers, track, group]);
 
   const updateAnswer = (idx: number, v: string) => {
     setAnswers((prev) => {
@@ -72,7 +87,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
   const allConsented = consent.every(Boolean);
 
   const validate = () => {
-    const missingIdentity = !name.trim() || !email.trim() || !phone.trim();
+    const missingIdentity = !name.trim() || !email.trim() || !phone.trim() || !university.trim();
     const missingAnswer = answers.some((a) => !a.trim());
     if (missingIdentity || missingAnswer) {
       showToast(content.missingRequiredMessage, "error");
@@ -94,7 +109,7 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
         name,
         email,
         phone,
-        studentId,
+        university,
         answers,
         file,
       });
@@ -128,8 +143,103 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
           </h1>
         </div>
 
+        {(infoNotice || openChatLink || contactPhone || isAdmin) && (
+          <section
+            style={{
+              marginBottom: 24,
+              padding: "16px 16px",
+              borderRadius: 12,
+              background: "var(--color-orange-tint)",
+              color: "var(--color-orange-dark)",
+            }}
+          >
+            <h2 style={{ fontSize: 13.5, fontWeight: 800, marginTop: 0, marginBottom: 10 }}>지원 안내</h2>
+            <EditableText
+              value={infoNotice}
+              fieldKey="applicationInfoNotice"
+              onSaved={setInfoNotice}
+              multiline
+              placeholder="지원서 마감일, 면접 일정, OT/MT 일정 등을 적어주세요."
+              style={{ fontSize: 13, lineHeight: 1.7, display: "block" }}
+            />
+            {(openChatLink || contactPhone || isAdmin) && (
+              <div
+                style={{
+                  marginTop: 12,
+                  paddingTop: 12,
+                  borderTop: "1px solid rgba(204,82,0,0.2)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                }}
+              >
+                <EditableText
+                  value={contactPhoneNote}
+                  fieldKey="contactPhoneNote"
+                  onSaved={setContactPhoneNote}
+                  multiline
+                  placeholder="문의 안내 문구"
+                  style={{ fontSize: 12.5, lineHeight: 1.6, display: "block" }}
+                />
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 2 }}>
+                  {openChatLink && (
+                    <a
+                      href={openChatLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700 }}
+                    >
+                      <MessageCircle size={14} /> 오픈채팅방 문의하기
+                    </a>
+                  )}
+                  {contactPhone && (
+                    <a
+                      href={`tel:${contactPhone.replace(/[^0-9+]/g, "")}`}
+                      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700 }}
+                    >
+                      <Phone size={14} /> {contactPhone}
+                    </a>
+                  )}
+                </div>
+                <EditableText
+                  value={openChatLink}
+                  fieldKey="contactOpenChatLink"
+                  onSaved={setOpenChatLink}
+                  placeholder="오픈채팅방 링크 (https://open.kakao.com/...)"
+                  style={{ fontSize: 11.5, opacity: 0.85, display: "block" }}
+                />
+                <EditableText
+                  value={contactPhone}
+                  fieldKey="contactPhone"
+                  onSaved={setContactPhone}
+                  placeholder="문의 전화번호 (예: 010-1234-5678)"
+                  style={{ fontSize: 11.5, opacity: 0.85, display: "block" }}
+                />
+              </div>
+            )}
+          </section>
+        )}
+
+        {groupConfig.description && (
+          <section
+            style={{
+              marginBottom: 24,
+              padding: "16px 16px",
+              borderRadius: 12,
+              border: "1px solid var(--color-line)",
+              background: "var(--color-card)",
+              fontSize: 13,
+              lineHeight: 1.7,
+              color: "var(--color-black)",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {groupConfig.description}
+          </section>
+        )}
+
         <section style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 10 }}>지원자 정보</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 10 }}>인적사항</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <input
               style={inputStyle}
@@ -139,28 +249,45 @@ export default function ApplicationForm({ track, group, groupConfig, content }: 
             />
             <input
               style={inputStyle}
-              placeholder="이메일 * (접수 확인 메일을 보내드려요)"
+              placeholder="이메일 * (예: zanchi@gmail.com — 활동 시 구글 드라이브를 사용하므로 구글 메일이면 더 좋습니다)"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               style={inputStyle}
-              placeholder="연락처 *"
+              placeholder="연락처 * (예: 010-1234-5678)"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
-            <input
-              style={inputStyle}
-              placeholder="학번 (선택)"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-            />
+            <div>
+              <div style={{ fontSize: 13, color: "var(--color-sub)", marginBottom: 8 }}>재학 중인 대학교 *</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {UNIVERSITY_OPTIONS.map((u) => (
+                  <button
+                    key={u}
+                    type="button"
+                    onClick={() => setUniversity(u)}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: 999,
+                      border: `1.5px solid ${university === u ? "var(--color-orange)" : "var(--color-line-strong)"}`,
+                      background: university === u ? "var(--color-orange-tint)" : "transparent",
+                      color: university === u ? "var(--color-orange-dark)" : "var(--color-black)",
+                      fontWeight: 700,
+                      fontSize: 13,
+                    }}
+                  >
+                    {u}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
         <section style={{ marginBottom: 8 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>지원 질문</h2>
+          <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 14 }}>지원자 필수 질문</h2>
           {groupConfig.questions.map((q, idx) => (
             <CharCounterTextarea
               key={idx}

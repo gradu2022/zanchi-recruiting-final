@@ -7,7 +7,7 @@ export type DraftData = {
   name: string;
   email: string;
   phone: string;
-  studentId: string;
+  university: string;
   answers: string[];
   savedAt: string;
 };

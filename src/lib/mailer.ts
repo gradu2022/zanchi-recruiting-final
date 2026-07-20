@@ -40,7 +40,7 @@ function buildAdminHtml(app: any, hasFile: boolean) {
         <tr><td style="padding:4px 10px;color:#666;">이름</td><td style="padding:4px 10px;font-weight:700;">${escapeHtml(app.name)}</td></tr>
         <tr><td style="padding:4px 10px;color:#666;">이메일</td><td style="padding:4px 10px;">${escapeHtml(app.email)}</td></tr>
         <tr><td style="padding:4px 10px;color:#666;">연락처</td><td style="padding:4px 10px;">${escapeHtml(app.phone)}</td></tr>
-        <tr><td style="padding:4px 10px;color:#666;">학번</td><td style="padding:4px 10px;">${escapeHtml(app.studentId || "미입력")}</td></tr>
+        <tr><td style="padding:4px 10px;color:#666;">대학교</td><td style="padding:4px 10px;">${escapeHtml(app.university || "미입력")}</td></tr>
       </table>
       ${buildAnswersTableHtml(app.answers)}
       ${
