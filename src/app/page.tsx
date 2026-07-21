@@ -138,29 +138,6 @@ export default function HomePage() {
           ADMIN LOGIN
         </Link>
       </div>
-
-      <a
-        href="#apply-section"
-        onClick={(e) => {
-          e.preventDefault();
-          document.getElementById("apply-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }}
-        style={{
-          position: "fixed",
-          right: 20,
-          bottom: 24,
-          zIndex: 40,
-          padding: "14px 24px",
-          borderRadius: 999,
-          background: "var(--color-orange)",
-          color: "#fff",
-          fontWeight: 800,
-          fontSize: 14.5,
-          boxShadow: "0 8px 22px rgba(255,103,0,0.4)",
-        }}
-      >
-        지원하기
-      </a>
     </div>
   );
 }

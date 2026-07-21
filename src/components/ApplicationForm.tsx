@@ -9,6 +9,7 @@ import FileUploadBox from "./FileUploadBox";
 import ConsentCheckboxes, { CONSENT_FLAT } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
 import EditableText from "./admin/EditableText";
+import RichEditableNotice from "./admin/RichEditableNotice";
 import Linkify from "./Linkify";
 import InterviewTimePicker from "./InterviewTimePicker";
 import { useToast } from "./Toast";
@@ -171,13 +172,12 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             }}
           >
             <h2 style={{ fontSize: 13.5, fontWeight: 800, marginTop: 0, marginBottom: 10 }}>지원 안내</h2>
-            <EditableText
+            <RichEditableNotice
               value={infoNotice}
               fieldKey="applicationInfoNotice"
               onSaved={setInfoNotice}
-              multiline
               placeholder="지원서 마감일, 면접 일정, OT/MT 일정 등을 적어주세요."
-              style={{ fontSize: 13, lineHeight: 1.7, display: "block" }}
+              style={{ fontSize: 13, lineHeight: 1.7, whiteSpace: "pre-wrap" }}
             />
             {(openChatLink || contactPhone || isAdmin) && (
               <div
@@ -198,7 +198,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                   placeholder="문의 안내 문구"
                   style={{ fontSize: 12.5, lineHeight: 1.6, display: "block" }}
                 />
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 2 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 2, alignItems: "center" }}>
                   {openChatLink && (
                     <a
                       href={openChatLink}
@@ -209,13 +209,16 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                       <MessageCircle size={14} /> 오픈채팅방 문의하기
                     </a>
                   )}
-                  {contactPhone && (
-                    <a
-                      href={`tel:${contactPhone.replace(/[^0-9+]/g, "")}`}
-                      style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700 }}
-                    >
-                      <Phone size={14} /> {contactPhone}
-                    </a>
+                  {(contactPhone || isAdmin) && (
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: 700 }}>
+                      <Phone size={14} />
+                      <EditableText
+                        value={contactPhone}
+                        fieldKey="contactPhone"
+                        onSaved={setContactPhone}
+                        placeholder="문의 전화번호 (예: 010-1234-5678)"
+                      />
+                    </div>
                   )}
                 </div>
                 <EditableText
@@ -223,13 +226,6 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                   fieldKey="contactOpenChatLink"
                   onSaved={setOpenChatLink}
                   placeholder="오픈채팅방 링크 (https://open.kakao.com/...)"
-                  style={{ fontSize: 11.5, opacity: 0.85, display: "block" }}
-                />
-                <EditableText
-                  value={contactPhone}
-                  fieldKey="contactPhone"
-                  onSaved={setContactPhone}
-                  placeholder="문의 전화번호 (예: 010-1234-5678)"
                   style={{ fontSize: 11.5, opacity: 0.85, display: "block" }}
                 />
               </div>
