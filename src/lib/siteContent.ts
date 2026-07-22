@@ -15,6 +15,7 @@ export type SiteContent = {
   missingRequiredMessage: string;
   recruitmentClosedMessage: string;
   fileEmailNoticeMessage: string;
+  editorMissionNotice: string;
   applicationInfoNotice: string;
   contactOpenChatLink: string;
   contactPhone: string;

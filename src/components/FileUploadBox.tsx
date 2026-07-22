@@ -36,7 +36,7 @@ export default function FileUploadBox({ file, onChange, tooLargeMessage }: Props
   return (
     <div style={{ marginBottom: 22 }}>
       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8 }}>
-        파일 첨부 <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF, 최대 {MAX_FILE_MB}MB, 1개)</span>
+        지원서 첨부 <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF, 최대 {MAX_FILE_MB}MB, 1개)</span>
       </div>
 
       {!file ? (

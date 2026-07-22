@@ -20,7 +20,12 @@ const TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
   { key: "editorCtaLabel", label: "에디터 CTA 버튼 글자" },
   { key: "designerCtaLabel", label: "디자이너 CTA 버튼 글자" },
   { key: "thankYouMessage", label: "제출 완료 감사 멘트" },
-  { key: "fileEmailNoticeMessage", label: "첨부파일 이메일 전송 안내 멘트", multiline: true },
+  { key: "fileEmailNoticeMessage", label: "첨부파일 이메일 전송 안내 멘트 (디자이너)", multiline: true },
+  {
+    key: "editorMissionNotice",
+    label: "에디터 전용: 지원서 첨부 아래 미션 제출 안내 (팀 버튼 위에 표시됨)",
+    multiline: true,
+  },
   { key: "fileTooLargeMessage", label: "파일 용량 초과 알림 멘트", multiline: true },
   { key: "missingRequiredMessage", label: "필수 응답 누락 알림 멘트", multiline: true },
   { key: "recruitmentClosedMessage", label: "모집 마감 시 안내 멘트", multiline: true },

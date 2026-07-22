@@ -12,6 +12,7 @@ import EditableText from "./admin/EditableText";
 import RichEditableNotice from "./admin/RichEditableNotice";
 import Linkify from "./Linkify";
 import InterviewTimePicker from "./InterviewTimePicker";
+import MissionTeamButtons from "./MissionTeamButtons";
 import { useToast } from "./Toast";
 import { saveDraft, loadDraft, clearDraft } from "@/lib/draft";
 import { submitApplication } from "@/lib/api";
@@ -25,7 +26,7 @@ type Props = {
   group: string;
   groupConfig: QuestionGroup;
   content: SiteContent;
-  editorGroups?: Record<string, { label: string }>;
+  editorGroups?: Record<string, { label: string; description?: string }>;
 };
 
 export default function ApplicationForm({ track, group, groupConfig, content, editorGroups }: Props) {
@@ -51,6 +52,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
   const [contactPhone, setContactPhone] = useState(content.contactPhone || "");
   const [contactPhoneNote, setContactPhoneNote] = useState(content.contactPhoneNote || "");
   const [fileEmailNotice, setFileEmailNotice] = useState(content.fileEmailNoticeMessage || "");
+  const [editorMissionNotice, setEditorMissionNotice] = useState(content.editorMissionNotice || "");
   const [isAdmin, setIsAdmin] = useState(false);
 
   const interviewDays = (content.interviewDays || "")
@@ -350,32 +352,62 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
 
         <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
 
-        {(fileEmailNotice || isAdmin) && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 8,
-              marginTop: -10,
-              marginBottom: 22,
-              padding: "12px 14px",
-              borderRadius: 10,
-              background: "var(--color-orange-tint)",
-              color: "var(--color-orange-dark)",
-              fontSize: 12.5,
-              lineHeight: 1.6,
-            }}
-          >
-            <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
-            <EditableText
-              value={fileEmailNotice}
-              fieldKey="fileEmailNoticeMessage"
-              onSaved={setFileEmailNotice}
-              multiline
-              placeholder="첨부파일 이메일 전송 안내 문구"
-              style={{ flex: 1 }}
-            />
-          </div>
+        {track === "editor" ? (
+          (editorMissionNotice || isAdmin) && (
+            <div
+              style={{
+                marginTop: -10,
+                marginBottom: 22,
+                padding: "12px 14px",
+                borderRadius: 10,
+                background: "var(--color-orange-tint)",
+                color: "var(--color-orange-dark)",
+                fontSize: 12.5,
+                lineHeight: 1.6,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+                <EditableText
+                  value={editorMissionNotice}
+                  fieldKey="editorMissionNotice"
+                  onSaved={setEditorMissionNotice}
+                  multiline
+                  placeholder="에디터 미션 제출 안내 문구"
+                  style={{ flex: 1, whiteSpace: "pre-wrap" }}
+                />
+              </div>
+              {editorGroups && <MissionTeamButtons groups={editorGroups} />}
+            </div>
+          )
+        ) : (
+          (fileEmailNotice || isAdmin) && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 8,
+                marginTop: -10,
+                marginBottom: 22,
+                padding: "12px 14px",
+                borderRadius: 10,
+                background: "var(--color-orange-tint)",
+                color: "var(--color-orange-dark)",
+                fontSize: 12.5,
+                lineHeight: 1.6,
+              }}
+            >
+              <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+              <EditableText
+                value={fileEmailNotice}
+                fieldKey="fileEmailNoticeMessage"
+                onSaved={setFileEmailNotice}
+                multiline
+                placeholder="첨부파일 이메일 전송 안내 문구"
+                style={{ flex: 1 }}
+              />
+            </div>
+          )
         )}
 
         <ConsentCheckboxes checked={consent} onChange={setConsent} content={content} />

@@ -39,6 +39,12 @@ const SettingsSchema = new Schema(
         default:
           "첨부파일은 업로드 후 welcometozanchi@gmail.com으로도 함께 보내주세요. (파일명 예시: OO팀_홍길동)",
       },
+      // 에디터 지원서 전용: 파일 첨부 아래 주황 박스에 표시되는 1지망 팀 미션 제출 안내
+      editorMissionNotice: {
+        type: String,
+        default:
+          "에디터 지원자분들은 지원서와 함께 '1지망 팀'에 해당하는 미션을 제출해주셔야 합니다.\nwelcometozanchi@gmail.com으로 글, 사진 및 이미지 파일을 보내주세요!\n\n메일 제목: 성명_잔치 00팀 미션 제출\nex) 김잔치_잔치 아트팀 미션 제출",
+      },
       applicationInfoNotice: {
         type: String,
         default:
