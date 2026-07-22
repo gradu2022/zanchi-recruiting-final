@@ -21,6 +21,9 @@ export default function MissionTeamButtons({ groups }: Props) {
 
   return (
     <div style={{ marginTop: 10 }}>
+      <div style={{ fontSize: 11.5, color: "var(--color-orange-dark)", opacity: 0.85, marginBottom: 6 }}>
+        👇 팀을 누르면(또는 마우스를 올리면) 미션 내용이 보여요
+      </div>
       <div style={{ display: "flex", gap: 8 }}>
         {Object.entries(groups).map(([key, g]) => (
           <button
@@ -33,11 +36,13 @@ export default function MissionTeamButtons({ groups }: Props) {
               flex: 1,
               padding: "10px 6px",
               borderRadius: 10,
-              border: `1.5px solid ${activeKey === key ? "var(--color-orange)" : "var(--color-line-strong)"}`,
-              background: activeKey === key ? "#fff" : "transparent",
+              border: `1.5px solid ${activeKey === key ? "var(--color-orange)" : "transparent"}`,
+              background: activeKey === key ? "#fff" : "rgba(255,255,255,0.5)",
               color: "var(--color-orange-dark)",
               fontWeight: 800,
               fontSize: 13,
+              boxShadow: activeKey === key ? "0 2px 8px rgba(204,82,0,0.18)" : "none",
+              transition: "background 0.12s, border-color 0.12s",
             }}
           >
             {g.label}
