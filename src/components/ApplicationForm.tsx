@@ -10,13 +10,13 @@ import ConsentCheckboxes, { CONSENT_FLAT } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
 import EditableText from "./admin/EditableText";
 import RichEditableNotice from "./admin/RichEditableNotice";
+import EditableGroupDescription from "./admin/EditableGroupDescription";
 import InterviewTimePicker from "./InterviewTimePicker";
 import MissionTeamButtons from "./MissionTeamButtons";
 import { useToast } from "./Toast";
 import { saveDraft, loadDraft, clearDraft } from "@/lib/draft";
 import { submitApplication } from "@/lib/api";
 import { getAdminToken } from "@/lib/adminAuth";
-import { linkifyRichText } from "@/lib/richText";
 import { UNIVERSITY_OPTIONS } from "@/lib/questionConfig";
 import type { QuestionGroup, Track } from "@/lib/questionConfig";
 import type { SiteContent } from "@/lib/siteContent";
@@ -27,9 +27,10 @@ type Props = {
   groupConfig: QuestionGroup;
   content: SiteContent;
   editorGroups?: Record<string, { label: string; description?: string }>;
+  trackGroups?: Record<string, { label: string; description?: string; questions: string[] }>;
 };
 
-export default function ApplicationForm({ track, group, groupConfig, content, editorGroups }: Props) {
+export default function ApplicationForm({ track, group, groupConfig, content, editorGroups, trackGroups }: Props) {
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -377,9 +378,13 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                 lineHeight: 1.6,
               }}
             >
-              {groupConfig.description && (
-                <div
+              {(groupConfig.description || isAdmin) && trackGroups && (
+                <EditableGroupDescription
+                  groups={trackGroups as Record<string, { label: string; description?: string; questions: string[] }>}
+                  activeKey={group}
+                  track={track}
                   style={{
+                    display: "block",
                     marginBottom: 10,
                     padding: "12px 14px",
                     borderRadius: 10,
@@ -388,7 +393,6 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                     color: "var(--color-black)",
                     whiteSpace: "pre-wrap",
                   }}
-                  dangerouslySetInnerHTML={{ __html: linkifyRichText(groupConfig.description) }}
                 />
               )}
               <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>

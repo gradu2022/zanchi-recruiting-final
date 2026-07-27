@@ -77,6 +77,7 @@ export default function ApplyPage() {
       groupConfig={groupConfig}
       content={data.content}
       editorGroups={track === "editor" ? data.questionGroups?.editor : undefined}
+      trackGroups={data.questionGroups?.[track]}
     />
   );
 }
