@@ -21,12 +21,6 @@ export const PUT = withAdmin(async (req: Request) => {
     if (typeof adminName === "string") settings.adminName = adminName;
 
     if (Array.isArray(adminEmails)) {
-      if (adminEmails.length > 4) {
-        return NextResponse.json(
-          { ok: false, message: "관리자 이메일은 최대 4개까지 등록할 수 있습니다." },
-          { status: 400 }
-        );
-      }
       settings.adminEmails = adminEmails.filter(Boolean);
     }
 

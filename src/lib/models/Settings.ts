@@ -3,14 +3,7 @@ import { Schema, models, model } from "mongoose";
 const SettingsSchema = new Schema(
   {
     adminName: { type: String, default: "관리자" },
-    adminEmails: {
-      type: [String],
-      default: [],
-      validate: {
-        validator: (arr: string[]) => arr.length <= 4,
-        message: "관리자 이메일은 최대 4개까지 등록할 수 있습니다.",
-      },
-    },
+    adminEmails: { type: [String], default: [] },
 
     recruitmentOpen: { type: Boolean, default: true },
     recruitmentDeadline: { type: Date, default: null },

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Plus, X } from "lucide-react";
 import Header from "@/components/Header";
 import { useToast } from "@/components/Toast";
 import { getAdminToken, clearAdminToken } from "@/lib/adminAuth";
@@ -13,7 +14,7 @@ export default function AdminMyPage() {
 
   const [ready, setReady] = useState(false);
   const [adminName, setAdminName] = useState("");
-  const [emails, setEmails] = useState<string[]>(["", "", "", ""]);
+  const [emails, setEmails] = useState<string[]>([""]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -25,9 +26,8 @@ export default function AdminMyPage() {
       try {
         const { settings } = await fetchAdminSettings();
         setAdminName(settings.adminName || "");
-        const padded = [...(settings.adminEmails || [])];
-        while (padded.length < 4) padded.push("");
-        setEmails(padded);
+        const existing = settings.adminEmails || [];
+        setEmails(existing.length > 0 ? existing : [""]);
       } catch (e: any) {
         if (e.status === 401) {
           clearAdminToken();
@@ -40,6 +40,10 @@ export default function AdminMyPage() {
       }
     })();
   }, [router, showToast]);
+
+  const addEmail = () => setEmails((prev) => [...prev, ""]);
+  const removeEmail = (idx: number) =>
+    setEmails((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== idx) : prev));
 
   const handleSave = async () => {
     setSaving(true);
@@ -75,20 +79,65 @@ export default function AdminMyPage() {
         </section>
 
         <section style={{ ...cardStyle, marginTop: 16 }}>
-          <label style={labelStyle}>알림을 받을 관리자 이메일 (최대 4개)</label>
+          <label style={labelStyle}>알림을 받을 관리자 이메일</label>
+          <p style={{ fontSize: 12, color: "var(--color-sub)", margin: "-4px 0 10px" }}>
+            리크루팅 당시의 운영진을 기준으로 업데이트 해주세요!
+          </p>
           {emails.map((email, idx) => (
-            <input
-              key={idx}
-              style={{ ...inputStyle, marginTop: idx > 0 ? 8 : 0 }}
-              value={email}
-              placeholder={`관리자 이메일 ${idx + 1}`}
-              onChange={(e) => {
-                const next = [...emails];
-                next[idx] = e.target.value;
-                setEmails(next);
-              }}
-            />
+            <div key={idx} style={{ display: "flex", gap: 6, marginTop: idx > 0 ? 8 : 0 }}>
+              <input
+                style={{ ...inputStyle, flex: 1 }}
+                value={email}
+                placeholder={`관리자 이메일 ${idx + 1}`}
+                onChange={(e) => {
+                  const next = [...emails];
+                  next[idx] = e.target.value;
+                  setEmails(next);
+                }}
+              />
+              {emails.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeEmail(idx)}
+                  aria-label="이메일 삭제"
+                  style={{
+                    width: 40,
+                    flexShrink: 0,
+                    borderRadius: 10,
+                    border: "1.5px solid var(--color-line)",
+                    background: "#fff",
+                    color: "var(--color-sub)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
           ))}
+          <button
+            type="button"
+            onClick={addEmail}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              width: "100%",
+              marginTop: 10,
+              padding: "10px 0",
+              borderRadius: 10,
+              border: "1.5px dashed var(--color-line-strong)",
+              background: "transparent",
+              color: "var(--color-sub)",
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            <Plus size={15} /> 이메일 추가
+          </button>
         </section>
 
         <button onClick={handleSave} disabled={saving} style={saveBtnStyle}>

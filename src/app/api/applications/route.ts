@@ -139,7 +139,7 @@ export async function POST(req: Request) {
 
     const mailPromise = sendApplicationEmails({
       app: application,
-      adminEmails: (settings.adminEmails || []).slice(0, 4),
+      adminEmails: settings.adminEmails || [],
       thankYouMessage: settings.content.thankYouMessage,
       attachmentBuffer: null,
       attachmentName,

@@ -11,8 +11,7 @@ export async function getOrCreateSettings() {
   const envEmails = (process.env.ADMIN_EMAILS || "")
     .split(",")
     .map((e) => e.trim())
-    .filter(Boolean)
-    .slice(0, 4);
+    .filter(Boolean);
 
   settings = await Settings.create({
     adminName: "관리자",

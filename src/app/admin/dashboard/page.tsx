@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UserCircle2, Settings2, LogOut, Download } from "lucide-react";
+import { UserCircle2, Settings2, LogOut } from "lucide-react";
 import { getAdminToken, clearAdminToken } from "@/lib/adminAuth";
-import { fetchSummary, fetchApplications, exportCsvUrlWithToken } from "@/lib/adminApi";
+import { fetchSummary, fetchApplications } from "@/lib/adminApi";
 import { useToast } from "@/components/Toast";
 import Header from "@/components/Header";
 import BarChart from "@/components/admin/BarChart";
@@ -31,7 +31,6 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detailCache, setDetailCache] = useState<Record<string, any>>({});
-  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!getAdminToken()) {
@@ -82,17 +81,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleExport = async () => {
-    setExporting(true);
-    try {
-      await exportCsvUrlWithToken()();
-    } catch (e: any) {
-      showToast(e.message || "CSV 내보내기에 실패했습니다.", "error");
-    } finally {
-      setExporting(false);
-    }
-  };
-
   const handleLogout = () => {
     clearAdminToken();
     router.replace("/admin");
@@ -109,9 +97,6 @@ export default function AdminDashboardPage() {
             관리자
           </h1>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <button onClick={handleExport} disabled={exporting} style={iconBtnStyle} title="엑셀(CSV) 다운로드">
-              <Download size={20} />
-            </button>
             <Link href="/admin/cms" style={iconBtnStyle} title="CMS 편집">
               <Settings2 size={20} />
             </Link>
