@@ -140,7 +140,7 @@ export default function AdminCmsPage() {
         recruitmentOpen,
         recruitmentDeadline: deadline ? new Date(deadline).toISOString() : null,
       });
-      showToast("CMS 내용이 저장되었습니다.", "success");
+      showToast("수정사항이 반영되었습니다.", "success");
     } catch (e: any) {
       showToast(e.message || "저장에 실패했습니다.", "error");
     } finally {

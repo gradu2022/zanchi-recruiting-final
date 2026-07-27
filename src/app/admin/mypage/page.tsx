@@ -52,7 +52,7 @@ export default function AdminMyPage() {
         adminName,
         adminEmails: emails.map((e) => e.trim()).filter(Boolean),
       });
-      showToast("마이페이지 정보가 저장되었습니다.", "success");
+      showToast("수정사항이 반영되었습니다.", "success");
     } catch (e: any) {
       showToast(e.message || "저장에 실패했습니다.", "error");
     } finally {

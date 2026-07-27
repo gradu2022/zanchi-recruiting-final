@@ -10,13 +10,13 @@ import ConsentCheckboxes, { CONSENT_FLAT } from "./ConsentCheckboxes";
 import SuccessModal from "./SuccessModal";
 import EditableText from "./admin/EditableText";
 import RichEditableNotice from "./admin/RichEditableNotice";
-import Linkify from "./Linkify";
 import InterviewTimePicker from "./InterviewTimePicker";
 import MissionTeamButtons from "./MissionTeamButtons";
 import { useToast } from "./Toast";
 import { saveDraft, loadDraft, clearDraft } from "@/lib/draft";
 import { submitApplication } from "@/lib/api";
 import { getAdminToken } from "@/lib/adminAuth";
+import { linkifyRichText } from "@/lib/richText";
 import { UNIVERSITY_OPTIONS } from "@/lib/questionConfig";
 import type { QuestionGroup, Track } from "@/lib/questionConfig";
 import type { SiteContent } from "@/lib/siteContent";
@@ -235,23 +235,6 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
           </section>
         )}
 
-        {track === "editor" && groupConfig.description && (
-          <section
-            style={{
-              marginBottom: 24,
-              padding: "16px 16px",
-              borderRadius: 12,
-              border: "1px solid var(--color-line)",
-              background: "var(--color-card)",
-              fontSize: 13,
-              lineHeight: 1.7,
-              color: "var(--color-black)",
-              whiteSpace: "pre-wrap",
-            }}
-          >
-            <Linkify text={groupConfig.description} />
-          </section>
-        )}
 
         <section style={{ marginBottom: 28 }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, marginBottom: 10 }}>인적사항</h2>
@@ -405,9 +388,8 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                     color: "var(--color-black)",
                     whiteSpace: "pre-wrap",
                   }}
-                >
-                  <Linkify text={groupConfig.description} />
-                </div>
+                  dangerouslySetInnerHTML={{ __html: linkifyRichText(groupConfig.description) }}
+                />
               )}
               <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
                 <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />

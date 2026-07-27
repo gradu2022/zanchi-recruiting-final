@@ -77,7 +77,7 @@ export default function RichEditableNotice({ value, fieldKey, onSaved, placehold
       await saveAdminSettings({ content: { [fieldKey]: html } });
       onSaved(html);
       setEditing(false);
-      showToast("수정되었습니다.", "success");
+      showToast("수정사항이 반영되었습니다.", "success");
     } catch (e: any) {
       showToast(e.message || "저장에 실패했습니다.", "error");
     } finally {

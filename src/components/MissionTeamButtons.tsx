@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, Pencil, Check } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { X, Pencil, Check, Bold, Italic, Underline } from "lucide-react";
 import { getAdminToken } from "@/lib/adminAuth";
 import { saveAdminSettings } from "@/lib/adminApi";
 import { useToast } from "@/components/Toast";
+import { sanitizeRichText, linkifyRichText } from "@/lib/richText";
 
 type Group = { label: string; description?: string };
 
@@ -15,7 +16,8 @@ type Props = {
 
 // ART/PLACE/PEOPLE 버튼 3개. 마우스를 올리면 해당 팀의 미션 설명이 잠깐 보이고,
 // 클릭하면 그 설명이 고정(pin)됩니다. 고정된 상태에서는 오른쪽 위 X로 닫을 수 있어요.
-// 관리자 로그인 상태에서는 고정된 설명 옆에 연필 아이콘이 떠서 바로 그 팀의 설명을 수정할 수 있습니다.
+// 관리자 로그인 상태에서는 고정된 설명 옆에 연필 아이콘이 떠서 바로 그 팀의 설명을 수정할 수 있습니다
+// (굵게/기울임/밑줄 서식도 선택 영역에 바로 적용 가능).
 export default function MissionTeamButtons({ groups, track = "editor" }: Props) {
   const { showToast } = useToast();
   const [hovered, setHovered] = useState<string | null>(null);
@@ -23,8 +25,8 @@ export default function MissionTeamButtons({ groups, track = "editor" }: Props) 
   const [isAdmin, setIsAdmin] = useState(false);
   const [overrides, setOverrides] = useState<Record<string, string>>({});
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState("");
   const [saving, setSaving] = useState(false);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsAdmin(!!getAdminToken());
@@ -34,23 +36,37 @@ export default function MissionTeamButtons({ groups, track = "editor" }: Props) 
   const activeGroup = activeKey ? groups[activeKey] : null;
   const activeDescription = activeKey ? overrides[activeKey] ?? activeGroup?.description ?? "" : "";
 
-  const startEdit = () => {
-    setDraft(activeDescription);
-    setEditing(true);
+  useEffect(() => {
+    if (editing && editorRef.current) {
+      editorRef.current.innerHTML = activeDescription || "";
+      document.execCommand("defaultParagraphSeparator", false, "br");
+      editorRef.current.focus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+
+  const startEdit = () => setEditing(true);
+
+  const withFocus = (fn: () => void) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    editorRef.current?.focus();
+    fn();
   };
+  const exec = (cmd: string) => document.execCommand(cmd);
 
   const save = async () => {
-    if (!activeKey) return;
+    if (!activeKey || !editorRef.current) return;
     setSaving(true);
     try {
+      const html = sanitizeRichText(editorRef.current.innerHTML);
       const nextGroups = {
         ...groups,
-        [activeKey]: { ...groups[activeKey], description: draft },
+        [activeKey]: { ...groups[activeKey], description: html },
       };
       await saveAdminSettings({ questionGroups: { [track]: nextGroups } });
-      setOverrides((prev) => ({ ...prev, [activeKey]: draft }));
+      setOverrides((prev) => ({ ...prev, [activeKey]: html }));
       setEditing(false);
-      showToast("수정되었습니다.", "success");
+      showToast("수정사항이 반영되었습니다.", "success");
     } catch (e: any) {
       showToast(e.message || "저장에 실패했습니다.", "error");
     } finally {
@@ -131,22 +147,45 @@ export default function MissionTeamButtons({ groups, track = "editor" }: Props) 
 
           {editing ? (
             <>
-              <textarea
-                autoFocus
-                rows={4}
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder="이 팀의 미션 설명을 입력하세요"
+              <div
+                style={{
+                  display: "flex",
+                  gap: 4,
+                  marginBottom: 4,
+                  padding: 3,
+                  borderRadius: 7,
+                  background: "#fff",
+                  border: "1px solid var(--color-line-strong)",
+                  width: "fit-content",
+                }}
+              >
+                <button type="button" onMouseDown={withFocus(() => exec("bold"))} style={toolBtnStyle} aria-label="굵게">
+                  <Bold size={12} />
+                </button>
+                <button type="button" onMouseDown={withFocus(() => exec("italic"))} style={toolBtnStyle} aria-label="기울임">
+                  <Italic size={12} />
+                </button>
+                <button type="button" onMouseDown={withFocus(() => exec("underline"))} style={toolBtnStyle} aria-label="밑줄">
+                  <Underline size={12} />
+                </button>
+              </div>
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
                 style={{
                   width: "100%",
+                  minHeight: 80,
                   padding: "8px 10px",
                   borderRadius: 8,
                   border: "1.5px solid var(--color-orange)",
                   fontSize: 12.5,
+                  lineHeight: 1.6,
                   fontFamily: "inherit",
                   outline: "none",
-                  resize: "vertical",
                   boxSizing: "border-box",
+                  background: "#fff",
+                  color: "var(--color-black)",
                 }}
               />
               <div style={{ display: "flex", gap: 6, marginTop: 6, justifyContent: "flex-end" }}>
@@ -177,7 +216,11 @@ export default function MissionTeamButtons({ groups, track = "editor" }: Props) 
             </>
           ) : (
             <>
-              {activeDescription || <span style={{ color: "var(--color-sub)" }}>(비어 있음 — 연필 아이콘을 눌러 입력하세요)</span>}
+              {activeDescription ? (
+                <span dangerouslySetInnerHTML={{ __html: linkifyRichText(activeDescription) }} />
+              ) : (
+                <span style={{ color: "var(--color-sub)" }}>(비어 있음 — 연필 아이콘을 눌러 입력하세요)</span>
+              )}
               {isAdmin && pinned && (
                 <button
                   onClick={startEdit}
@@ -208,3 +251,15 @@ export default function MissionTeamButtons({ groups, track = "editor" }: Props) 
     </div>
   );
 }
+
+const toolBtnStyle: React.CSSProperties = {
+  width: 24,
+  height: 24,
+  borderRadius: 5,
+  border: "none",
+  background: "transparent",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "var(--color-black)",
+};
