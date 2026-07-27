@@ -37,7 +37,7 @@ const SettingsSchema = new Schema(
       fileEmailNoticeMessage: {
         type: String,
         default:
-          "첨부파일은 업로드 후 welcometozanchi@gmail.com으로도 함께 보내주세요. (파일명 예시: OO팀_홍길동)",
+          "⚠️ 미션 파일은 위 '미션 첨부' 업로드와 welcometozanchi@gmail.com 이메일 발송, 두 가지 방법 모두로 제출해주셔야 합니다! (파일명 예시: OO팀_홍길동)",
       },
       // 에디터 지원서 전용: 파일 첨부 아래 주황 박스에 표시되는 1지망 팀 미션 제출 안내
       editorMissionNotice: {

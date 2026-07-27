@@ -235,7 +235,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
           </section>
         )}
 
-        {groupConfig.description && (
+        {track === "editor" && groupConfig.description && (
           <section
             style={{
               marginBottom: 24,
@@ -381,12 +381,9 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             </div>
           )
         ) : (
-          (fileEmailNotice || isAdmin) && (
+          (fileEmailNotice || isAdmin || groupConfig.description) && (
             <div
               style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 8,
                 marginTop: -10,
                 marginBottom: 22,
                 padding: "12px 14px",
@@ -397,15 +394,32 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                 lineHeight: 1.6,
               }}
             >
-              <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
-              <EditableText
-                value={fileEmailNotice}
-                fieldKey="fileEmailNoticeMessage"
-                onSaved={setFileEmailNotice}
-                multiline
-                placeholder="첨부파일 이메일 전송 안내 문구"
-                style={{ flex: 1 }}
-              />
+              {groupConfig.description && (
+                <div
+                  style={{
+                    marginBottom: 10,
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    background: "#fff",
+                    border: "1px solid var(--color-line)",
+                    color: "var(--color-black)",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  <Linkify text={groupConfig.description} />
+                </div>
+              )}
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+                <EditableText
+                  value={fileEmailNotice}
+                  fieldKey="fileEmailNoticeMessage"
+                  onSaved={setFileEmailNotice}
+                  multiline
+                  placeholder="첨부파일 이메일 전송 안내 문구"
+                  style={{ flex: 1 }}
+                />
+              </div>
             </div>
           )
         )}
