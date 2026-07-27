@@ -163,7 +163,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
           </h1>
         </div>
 
-        {(infoNotice || openChatLink || contactPhone || isAdmin) && (
+        {track === "designer" && (infoNotice || openChatLink || contactPhone || isAdmin) && (
           <section
             style={{
               marginBottom: 24,
@@ -264,7 +264,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             />
             <input
               style={inputStyle}
-              placeholder="이메일 * (활동 시 구글 드라이브를 사용하므로 구글 메일이면 더 좋습니다)"
+              placeholder="이메일 * (구글 메일이면 더 좋습니다)"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -377,7 +377,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                   style={{ flex: 1, whiteSpace: "pre-wrap" }}
                 />
               </div>
-              {editorGroups && <MissionTeamButtons groups={editorGroups} />}
+              {editorGroups && <MissionTeamButtons groups={editorGroups} track="editor" />}
             </div>
           )
         ) : (

@@ -43,12 +43,12 @@ const SettingsSchema = new Schema(
       editorMissionNotice: {
         type: String,
         default:
-          "에디터 지원자분들은 지원서와 함께 '1지망 팀'에 해당하는 미션을 제출해주셔야 합니다.\nwelcometozanchi@gmail.com으로 글, 사진 및 이미지 파일을 보내주세요!\n\n메일 제목: 성명_잔치 00팀 미션 제출\nex) 김잔치_잔치 아트팀 미션 제출",
+          "에디터 지원자분들은 지원서와 함께 '1지망 팀'에 해당하는 미션을 제출해주셔야 합니다.\n\n⚠️ 미션글은 welcometozanchi@gmail.com 이메일 발송과 이 페이지 위 '미션 첨부' 업로드, 두 가지 방법 모두로 제출해주셔야 합니다!\n\n메일 제목: 성명_잔치 00팀 미션 제출\nex) 김잔치_잔치 아트팀 미션 제출",
       },
       applicationInfoNotice: {
         type: String,
         default:
-          "신촌 웹매거진 \"잔치\"의 새로운 잔치꾼을 모집합니다!\n\n잔치와 함께 활동하고자 지원해주신 예비 잔치꾼 여러분 환영합니다.\n아래 문항에 솔직한 답변 부탁드리겠습니다 :)\n\n지원서 마감 일자: 추후 공지\n면접 일자: 8/23(일) ~ 8/25(화) (비대면 면접)\n최종 합격 발표: 8/30(일)\n오프라인 OT: 9/3(목), 신촌\nMT: 9/4(금) ~ 9/5(토)\n\n함께 벌입시다, 잔치!\nwww.welcometozanchi.com",
+          "신촌 웹매거진 \"잔치\"의 새로운 잔치꾼을 모집합니다!\n\n잔치와 함께 활동하고자 지원해주신 예비 잔치꾼 여러분 환영합니다.\n아래 문항에 솔직한 답변 부탁드리겠습니다 :)\n\n지원서 마감 일자: 8/16(일)\n면접 일자: 8/23(일) ~ 8/25(화) (비대면 면접)\n최종 합격 발표: 8/30(일)\n오프라인 OT: 9/3(목), 신촌\nMT: 9/4(금) ~ 9/5(토)\n\n함께 벌입시다, 잔치!\nwww.welcometozanchi.com",
       },
       contactOpenChatLink: { type: String, default: "" },
       contactPhone: { type: String, default: "" },
