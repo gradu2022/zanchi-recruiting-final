@@ -36,7 +36,7 @@ export default function FileUploadBox({ file, onChange, tooLargeMessage }: Props
   return (
     <div style={{ marginBottom: 22 }}>
       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8 }}>
-        미션 첨부 <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF, 최대 {MAX_FILE_MB}MB, 1개)</span>
+        미션 첨부 <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF/PNG/JPG, 최대 {MAX_FILE_MB}MB, 1개)</span>
       </div>
 
       {!file ? (
@@ -88,7 +88,7 @@ export default function FileUploadBox({ file, onChange, tooLargeMessage }: Props
       <input
         ref={inputRef}
         type="file"
-        accept=".hwp,.pdf,application/pdf"
+        accept=".hwp,.pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
         onChange={(e) => handleSelect(e.target.files?.[0] ?? null)}
         style={{ display: "none" }}
       />

@@ -38,6 +38,18 @@ const SettingsSchema = new Schema(
         default:
           "에디터 지원자분들은 지원서와 함께 '1지망 팀'에 해당하는 미션을 제출해주셔야 합니다.\n\n⚠️ 미션글은 welcometozanchi@gmail.com 이메일 발송과 이 페이지 위 '미션 첨부' 업로드, 두 가지 방법 모두로 제출해주셔야 합니다!\n\n메일 제목: 성명_잔치 00팀 미션 제출\nex) 김잔치_잔치 아트팀 미션 제출",
       },
+      // 디자이너(design) 전용: 미션 첨부 박스 위에 표시되는 포트폴리오 제출 안내
+      designerPortfolioNotice: {
+        type: String,
+        default:
+          "이번 학기 디자인 팀 디자이너의 업무는\n1. 잔치 인스타그램 카드뉴스 및 썸네일 디자인\n2. 종이 잡지 편집 디자인\n이 중점이 되므로, 관련된 역량을 보여주실 수 있는 포트폴리오를 제출해주시면 감사하겠습니다!\n\n제출 방법: 파일 첨부 및 welcometozanchi@gmail.com로 전송\n메일 제목: 성명_잔치 디자인팀_디자이너_포트폴리오 제출",
+      },
+      // 콘텐츠 디자이너(content-design) 전용: 미션 첨부 박스 위에 표시되는 포트폴리오 제출 안내
+      contentDesignerPortfolioNotice: {
+        type: String,
+        default:
+          "본인이 디자인한 작품이나 작업물의 포트폴리오를 제출해주세요!\n포트폴리오 파일은 웹, pdf, png, 문서 등 디자인한 작품을 볼 수 있는 형식이라면 자유롭게 제출 가능합니다.\n\n이번 학기 디자인 팀 콘텐츠 디자이너의 업무는\n1. 잔치플러스 인스타그램 카드뉴스 및 썸네일 디자인\n2. 잔치 플러스 및 잔치 인스타그램 운영 및 관리\n3. 종이잡지 편집 디자인\n이 중점이 되므로, 관련된 역량을 보여주실 수 있는 포트폴리오를 제출해주시면 감사하겠습니다!\n\n제출 방법: 파일 첨부 및 welcometozanchi@gmail.com로 전송\n메일 제목: 성명_잔치 디자인팀_디자이너_포트폴리오 제출",
+      },
       applicationInfoNotice: {
         type: String,
         default:

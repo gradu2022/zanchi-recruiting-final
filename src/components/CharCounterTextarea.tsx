@@ -42,7 +42,7 @@ export default function CharCounterTextarea({ index, question, value, onChange }
         >
           {index}
         </span>
-        <span>{question}</span>
+        <span style={{ whiteSpace: "pre-wrap" }}>{question}</span>
       </label>
       <textarea
         value={value}

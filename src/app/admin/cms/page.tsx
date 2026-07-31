@@ -26,6 +26,16 @@ const TEXT_FIELDS: { key: string; label: string; multiline?: boolean }[] = [
     label: "에디터 전용: 지원서 첨부 아래 미션 제출 안내 (팀 버튼 위에 표시됨)",
     multiline: true,
   },
+  {
+    key: "designerPortfolioNotice",
+    label: "디자이너 전용: 미션 첨부 위 포트폴리오 제출 안내",
+    multiline: true,
+  },
+  {
+    key: "contentDesignerPortfolioNotice",
+    label: "콘텐츠 디자이너 전용: 미션 첨부 위 포트폴리오 제출 안내",
+    multiline: true,
+  },
   { key: "fileTooLargeMessage", label: "파일 용량 초과 알림 멘트", multiline: true },
   { key: "missingRequiredMessage", label: "필수 응답 누락 알림 멘트", multiline: true },
   { key: "recruitmentClosedMessage", label: "모집 마감 시 안내 멘트", multiline: true },
@@ -155,7 +165,7 @@ export default function AdminCmsPage() {
       <Header showBack />
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "24px 20px 100px" }}>
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 21, marginBottom: 20 }}>
-          풀 커스텀 CMS
+          문항 수정
         </h1>
 
         <section style={cardStyle}>

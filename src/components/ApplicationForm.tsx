@@ -54,6 +54,10 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
   const [contactPhoneNote, setContactPhoneNote] = useState(content.contactPhoneNote || "");
   const [fileEmailNotice, setFileEmailNotice] = useState(content.fileEmailNoticeMessage || "");
   const [editorMissionNotice, setEditorMissionNotice] = useState(content.editorMissionNotice || "");
+  const [designerPortfolioNotice, setDesignerPortfolioNotice] = useState(content.designerPortfolioNotice || "");
+  const [contentDesignerPortfolioNotice, setContentDesignerPortfolioNotice] = useState(
+    content.contentDesignerPortfolioNotice || ""
+  );
   const [isAdmin, setIsAdmin] = useState(false);
 
   const interviewDays = (content.interviewDays || "")
@@ -333,6 +337,38 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             />
           ))}
         </section>
+
+        {track === "designer" &&
+          (() => {
+            const isContentDesign = group === "content-design";
+            const noticeValue = isContentDesign ? contentDesignerPortfolioNotice : designerPortfolioNotice;
+            const fieldKey = isContentDesign ? "contentDesignerPortfolioNotice" : "designerPortfolioNotice";
+            const setNotice = isContentDesign ? setContentDesignerPortfolioNotice : setDesignerPortfolioNotice;
+            if (!noticeValue && !isAdmin) return null;
+            return (
+              <div
+                style={{
+                  marginBottom: 14,
+                  padding: "12px 14px",
+                  borderRadius: 10,
+                  background: "#fff",
+                  border: "1px solid var(--color-line)",
+                  color: "var(--color-black)",
+                  fontSize: 12.5,
+                  lineHeight: 1.7,
+                }}
+              >
+                <EditableText
+                  value={noticeValue}
+                  fieldKey={fieldKey}
+                  onSaved={setNotice}
+                  multiline
+                  placeholder="포트폴리오 제출 안내 문구"
+                  style={{ display: "block", whiteSpace: "pre-wrap" }}
+                />
+              </div>
+            );
+          })()}
 
         <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
 

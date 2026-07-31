@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
-const ALLOWED_EXT = [".hwp", ".pdf"];
+const ALLOWED_EXT = [".hwp", ".pdf", ".png", ".jpg", ".jpeg"];
 
 export async function POST(req: Request) {
   try {
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       const ext = dot >= 0 ? file.name.slice(dot).toLowerCase() : "";
       if (!ALLOWED_EXT.includes(ext)) {
         return NextResponse.json(
-          { ok: false, message: "HWP 또는 PDF 파일만 첨부할 수 있습니다." },
+          { ok: false, message: "HWP, PDF, PNG, JPG 파일만 첨부할 수 있습니다." },
           { status: 400 }
         );
       }
