@@ -19,6 +19,7 @@ type Application = {
   status: "대기" | "합격" | "불합격";
   answers: { question: string; answer: string }[];
   file?: { originalName?: string; storedName?: string; gridfsId?: string };
+  portfolioFile?: { originalName?: string; storedName?: string; gridfsId?: string };
   createdAt: string;
 };
 
@@ -44,6 +45,7 @@ onDeleted: (id: string) => void;
 const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [downloadingPortfolio, setDownloadingPortfolio] = useState(false);
 
   const changeStatus = async (next: "대기" | "합격" | "불합격") => {
     setSaving(true);
@@ -70,6 +72,21 @@ const [deleting, setDeleting] = useState(false);
       showToast(e.message || "파일 다운로드에 실패했습니다.", "error");
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleDownloadPortfolio = async () => {
+    setDownloadingPortfolio(true);
+    try {
+      await downloadApplicationFile(
+        application._id,
+        application.portfolioFile?.storedName || application.portfolioFile?.originalName || "portfolio",
+        "portfolio"
+      );
+    } catch (e: any) {
+      showToast(e.message || "파일 다운로드에 실패했습니다.", "error");
+    } finally {
+      setDownloadingPortfolio(false);
     }
   };
 
@@ -142,25 +159,49 @@ const [deleting, setDeleting] = useState(false);
           ))}
         </div>
 
-        {application.file?.storedName && (
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            style={{
-              marginTop: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "9px 14px",
-              borderRadius: 10,
-              border: "1.5px solid var(--color-line)",
-              background: "#fff",
-              fontSize: 13,
-            }}
-          >
-            <Download size={16} />
-            {downloading ? "다운로드 중..." : `첨부파일 다운로드 (${application.file.storedName})`}
-          </button>
+        {(application.file?.storedName || application.portfolioFile?.storedName) && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
+            {application.file?.storedName && (
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "9px 14px",
+                  borderRadius: 10,
+                  border: "1.5px solid var(--color-line)",
+                  background: "#fff",
+                  fontSize: 13,
+                }}
+              >
+                <Download size={16} />
+                {downloading ? "다운로드 중..." : `미션 첨부파일 다운로드 (${application.file.storedName})`}
+              </button>
+            )}
+            {application.portfolioFile?.storedName && (
+              <button
+                onClick={handleDownloadPortfolio}
+                disabled={downloadingPortfolio}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "9px 14px",
+                  borderRadius: 10,
+                  border: "1.5px solid var(--color-line)",
+                  background: "#fff",
+                  fontSize: 13,
+                }}
+              >
+                <Download size={16} />
+                {downloadingPortfolio
+                  ? "다운로드 중..."
+                  : `포트폴리오 다운로드 (${application.portfolioFile.storedName})`}
+              </button>
+            )}
+          </div>
         )}
 
 <button

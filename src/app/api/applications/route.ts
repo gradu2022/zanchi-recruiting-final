@@ -51,17 +51,21 @@ export async function POST(req: Request) {
 
     const fileEntry = formData.get("file");
     const file = fileEntry instanceof File && fileEntry.size > 0 ? fileEntry : null;
+    const portfolioFileEntry = formData.get("portfolioFile");
+    const portfolioFile =
+      portfolioFileEntry instanceof File && portfolioFileEntry.size > 0 ? portfolioFileEntry : null;
 
-    if (file) {
-      const dot = file.name.lastIndexOf(".");
-      const ext = dot >= 0 ? file.name.slice(dot).toLowerCase() : "";
+    for (const f of [file, portfolioFile]) {
+      if (!f) continue;
+      const dot = f.name.lastIndexOf(".");
+      const ext = dot >= 0 ? f.name.slice(dot).toLowerCase() : "";
       if (!ALLOWED_EXT.includes(ext)) {
         return NextResponse.json(
           { ok: false, message: "HWP, PDF, PNG, JPG 파일만 첨부할 수 있습니다." },
           { status: 400 }
         );
       }
-      if (file.size > MAX_FILE_SIZE) {
+      if (f.size > MAX_FILE_SIZE) {
         return NextResponse.json(
           { ok: false, message: settings.content.fileTooLargeMessage },
           { status: 400 }
@@ -111,14 +115,37 @@ export async function POST(req: Request) {
       file: file
         ? { originalName: file.name, mimeType: file.type, size: file.size }
         : undefined,
+      portfolioFile: portfolioFile
+        ? { originalName: portfolioFile.name, mimeType: portfolioFile.type, size: portfolioFile.size }
+        : undefined,
     });
 
     let attachmentBuffer: Buffer | null = null;
     let attachmentName: string | null = null;
-
     if (file) {
       attachmentBuffer = Buffer.from(await file.arrayBuffer());
-      attachmentName = buildAttachmentFilename({ track, group, name, phone, originalName: file.name });
+      attachmentName = buildAttachmentFilename({
+        track,
+        group,
+        name,
+        phone,
+        originalName: file.name,
+        kind: portfolioFile ? "미션" : undefined,
+      });
+    }
+
+    let portfolioBuffer: Buffer | null = null;
+    let portfolioName: string | null = null;
+    if (portfolioFile) {
+      portfolioBuffer = Buffer.from(await portfolioFile.arrayBuffer());
+      portfolioName = buildAttachmentFilename({
+        track,
+        group,
+        name,
+        phone,
+        originalName: portfolioFile.name,
+        kind: "포트폴리오",
+      });
     }
 
     // ── GridFS 저장과 메일 발송은 서로 의존하지 않으므로 동시에(병렬로) 처리해서
@@ -137,16 +164,28 @@ export async function POST(req: Request) {
           })
       : Promise.resolve();
 
+    const portfolioGridfsPromise = portfolioBuffer
+      ? saveBufferToGridFS(portfolioBuffer, portfolioName as string, portfolioFile!.type)
+          .then((gridfsId) => {
+            application.portfolioFile.storedName = portfolioName;
+            application.portfolioFile.gridfsId = gridfsId;
+          })
+          .catch((err: any) => {
+            console.error("[GRIDFS] 포트폴리오 파일 저장 실패:", err.message);
+            application.mailStatus.lastError = `GridFS 저장 실패: ${err.message}`;
+          })
+      : Promise.resolve();
+
     const mailPromise = sendApplicationEmails({
       app: application,
       adminEmails: settings.adminEmails || [],
       thankYouMessage: settings.content.thankYouMessage,
       attachmentBuffer: null,
       attachmentName,
-      hasFile: Boolean(file),
+      hasFile: Boolean(file || portfolioFile),
     });
 
-    const [, mailResult] = await Promise.all([gridfsPromise, mailPromise]);
+    const [, , mailResult] = await Promise.all([gridfsPromise, portfolioGridfsPromise, mailPromise]);
 
     application.mailStatus.adminMailSent = mailResult.adminMailSent;
     application.mailStatus.applicantMailSent = mailResult.applicantMailSent;

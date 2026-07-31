@@ -78,8 +78,8 @@ export async function deleteApplication(id: string) {
   return res.json();
 }
 
-export async function downloadApplicationFile(id: string, fallbackName: string) {
-  const res = await request(`/api/admin/applications/${id}/file`);
+export async function downloadApplicationFile(id: string, fallbackName: string, type?: "portfolio") {
+  const res = await request(`/api/admin/applications/${id}/file${type ? `?type=${type}` : ""}`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

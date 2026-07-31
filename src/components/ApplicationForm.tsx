@@ -42,6 +42,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
   const [interviewAvailability, setInterviewAvailability] = useState<string[]>([]);
   const [answers, setAnswers] = useState<string[]>(groupConfig.questions.map(() => ""));
   const [file, setFile] = useState<File | null>(null);
+  const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
   const [consent, setConsent] = useState<boolean[]>(CONSENT_FLAT.map(() => false));
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -137,6 +138,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
         interviewAvailability,
         answers,
         file,
+        portfolioFile,
       });
       clearDraft(track, group);
       setShowSuccess(true);
@@ -346,31 +348,41 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
             const setNotice = isContentDesign ? setContentDesignerPortfolioNotice : setDesignerPortfolioNotice;
             if (!noticeValue && !isAdmin) return null;
             return (
-              <div
-                style={{
-                  marginBottom: 14,
-                  padding: "12px 14px",
-                  borderRadius: 10,
-                  background: "#fff",
-                  border: "1px solid var(--color-line)",
-                  color: "var(--color-black)",
-                  fontSize: 12.5,
-                  lineHeight: 1.7,
-                }}
-              >
-                <EditableText
-                  value={noticeValue}
-                  fieldKey={fieldKey}
-                  onSaved={setNotice}
-                  multiline
-                  placeholder="포트폴리오 제출 안내 문구"
-                  style={{ display: "block", whiteSpace: "pre-wrap" }}
+              <>
+                <div
+                  style={{
+                    marginBottom: 14,
+                    padding: "12px 14px",
+                    borderRadius: 10,
+                    background: "#fff",
+                    border: "1.5px solid var(--color-orange)",
+                    color: "var(--color-black)",
+                    fontSize: 12.5,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  <EditableText
+                    value={noticeValue}
+                    fieldKey={fieldKey}
+                    onSaved={setNotice}
+                    multiline
+                    placeholder="포트폴리오 제출 안내 문구"
+                    style={{ display: "block", whiteSpace: "pre-wrap" }}
+                  />
+                </div>
+                <FileUploadBox
+                  file={portfolioFile}
+                  onChange={setPortfolioFile}
+                  tooLargeMessage={content.fileTooLargeMessage}
+                  label="포트폴리오 첨부"
                 />
-              </div>
+              </>
             );
           })()}
 
-        <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
+        {track === "editor" && (
+          <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
+        )}
 
         {track === "editor" ? (
           (editorMissionNotice || isAdmin) && (
@@ -431,6 +443,7 @@ export default function ApplicationForm({ track, group, groupConfig, content, ed
                   }}
                 />
               )}
+              <FileUploadBox file={file} onChange={setFile} tooLargeMessage={content.fileTooLargeMessage} />
               <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
                 <Mail size={16} style={{ flexShrink: 0, marginTop: 1 }} />
                 <EditableText

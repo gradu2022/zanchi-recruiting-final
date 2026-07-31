@@ -12,6 +12,7 @@ export type SubmitPayload = {
   interviewAvailability: string[];
   answers: string[];
   file: File | null;
+  portfolioFile?: File | null;
 };
 
 export async function submitApplication(payload: SubmitPayload): Promise<{ ok: boolean }> {
@@ -26,6 +27,7 @@ export async function submitApplication(payload: SubmitPayload): Promise<{ ok: b
   formData.append("interviewAvailability", JSON.stringify(payload.interviewAvailability));
   formData.append("answers", JSON.stringify(payload.answers));
   if (payload.file) formData.append("file", payload.file);
+  if (payload.portfolioFile) formData.append("portfolioFile", payload.portfolioFile);
 
   const res = await fetch("/api/applications", {
     method: "POST",

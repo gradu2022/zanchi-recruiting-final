@@ -36,6 +36,15 @@ const ApplicationSchema = new Schema(
       gridfsId: { type: Schema.Types.ObjectId, default: null },
     },
 
+    // 디자이너/콘텐츠 디자이너 전용: 미션 첨부와 별도인 포트폴리오 첨부파일
+    portfolioFile: {
+      originalName: { type: String, default: null },
+      storedName: { type: String, default: null },
+      mimeType: { type: String, default: null },
+      size: { type: Number, default: null },
+      gridfsId: { type: Schema.Types.ObjectId, default: null },
+    },
+
     status: { type: String, enum: ["대기", "합격", "불합격"], default: "대기" },
 
     mailStatus: {

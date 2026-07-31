@@ -10,9 +10,10 @@ type Props = {
   file: File | null;
   onChange: (file: File | null) => void;
   tooLargeMessage?: string;
+  label?: string;
 };
 
-export default function FileUploadBox({ file, onChange, tooLargeMessage }: Props) {
+export default function FileUploadBox({ file, onChange, tooLargeMessage, label = "미션 첨부" }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
 
@@ -36,7 +37,7 @@ export default function FileUploadBox({ file, onChange, tooLargeMessage }: Props
   return (
     <div style={{ marginBottom: 22 }}>
       <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8 }}>
-        미션 첨부 <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF/PNG/JPG, 최대 {MAX_FILE_MB}MB, 1개)</span>
+        {label} <span style={{ color: "var(--color-sub)", fontWeight: 400 }}>(HWP/PDF/PNG/JPG, 최대 {MAX_FILE_MB}MB, 1개)</span>
       </div>
 
       {!file ? (

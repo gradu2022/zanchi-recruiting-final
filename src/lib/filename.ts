@@ -18,24 +18,27 @@ function lastDigits(phone: string, n = 4) {
   return digitsOnly.slice(-n) || "0000";
 }
 
-// 예: [에디터_ART_홍길동_1234].pdf
+// 예: [에디터_ART_홍길동_1234].pdf / [디자이너_Designer_홍길동_1234_포트폴리오].png
 export function buildAttachmentFilename({
   track,
   group,
   name,
   phone,
   originalName,
+  kind,
 }: {
   track: string;
   group: string;
   name: string;
   phone: string;
   originalName: string;
+  kind?: string;
 }) {
   const dot = originalName.lastIndexOf(".");
   const ext = dot >= 0 ? originalName.slice(dot).toLowerCase() : "";
   const groupLabel = sanitize(resolveGroupLabel(track, group));
   const safeName = sanitize(name);
   const phoneTail = lastDigits(phone);
-  return `[${groupLabel}_${safeName}_${phoneTail}]${ext}`;
+  const kindTag = kind ? `_${sanitize(kind)}` : "";
+  return `[${groupLabel}_${safeName}_${phoneTail}${kindTag}]${ext}`;
 }
